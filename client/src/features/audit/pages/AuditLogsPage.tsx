@@ -14,7 +14,6 @@ import {
   Grid,
   TextField,
   MenuItem,
-  CircularProgress,
   Pagination,
   Dialog,
   DialogTitle,
@@ -24,6 +23,8 @@ import {
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '../../../lib/api/apiClient';
+import { COLORS } from '../../../constants/colors';
+import { ShimmerTableRows } from '../../../components/common/ShimmerLoader';
 
 interface AuditLogDto {
   _id: string;
@@ -85,7 +86,7 @@ export const AuditLogsPage: React.FC = () => {
   return (
     <Box sx={{ p: { xs: 2, md: 3 } }}>
       <Box sx={{ mb: 3 }}>
-        <Typography variant="h4" fontWeight={700} color="text.primary">
+        <Typography variant="h4" color="text.primary">
           System Audit Trail
         </Typography>
         <Typography variant="body2" color="text.secondary">
@@ -94,7 +95,7 @@ export const AuditLogsPage: React.FC = () => {
       </Box>
 
       {/* Filter Bar */}
-      <Paper sx={{ p: 2.5, mb: 3, borderRadius: 3, border: '1px solid #E2E8F0' }}>
+      <Paper sx={{ p: 2.5, mb: 3, borderRadius: 3, border: `1px solid ${COLORS.neutral.borderLight}` }}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6} md={3}>
             <TextField
@@ -142,28 +143,24 @@ export const AuditLogsPage: React.FC = () => {
       </Paper>
 
       {/* Table */}
-      <Paper sx={{ borderRadius: 3, border: '1px solid #E2E8F0', overflow: 'hidden' }}>
+      <Paper sx={{ borderRadius: 3, border: `1px solid ${COLORS.neutral.borderLight}`, overflow: 'hidden' }}>
         <TableContainer>
           <Table>
-            <TableHead sx={{ backgroundColor: '#F8FAFC' }}>
+            <TableHead sx={{ backgroundColor: COLORS.neutral.bgHover }}>
               <TableRow>
-                <TableCell sx={{ fontWeight: 700 }}>Timestamp</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Action</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Entity</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Actor</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>IP Address</TableCell>
-                <TableCell sx={{ fontWeight: 700 }} align="right">
+                <TableCell>Timestamp</TableCell>
+                <TableCell>Action</TableCell>
+                <TableCell>Entity</TableCell>
+                <TableCell>Actor</TableCell>
+                <TableCell>IP Address</TableCell>
+                <TableCell align="right">
                   Details
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {isLoading ? (
-                <TableRow>
-                  <TableCell colSpan={6} align="center" sx={{ py: 6 }}>
-                    <CircularProgress size={36} />
-                  </TableCell>
-                </TableRow>
+                <ShimmerTableRows rows={6} columns={6} hasAvatar={false} />
               ) : logs.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} align="center" sx={{ py: 6 }}>
@@ -183,11 +180,10 @@ export const AuditLogsPage: React.FC = () => {
                         label={log.action}
                         color={ACTION_COLORS[log.action] || 'default'}
                         size="small"
-                        sx={{ fontWeight: 700 }}
                       />
                     </TableCell>
                     <TableCell>
-                      <Typography variant="subtitle2" fontWeight={600}>
+                      <Typography variant="subtitle2">
                         {log.entityType}
                       </Typography>
                       <Typography variant="caption" color="text.secondary">
@@ -197,7 +193,7 @@ export const AuditLogsPage: React.FC = () => {
                     <TableCell>
                       {log.userId ? (
                         <Box>
-                          <Typography variant="body2" fontWeight={600}>
+                          <Typography variant="body2">
                             {log.userId.firstName} {log.userId.lastName}
                           </Typography>
                           <Typography variant="caption" color="text.secondary">
@@ -238,19 +234,19 @@ export const AuditLogsPage: React.FC = () => {
 
       {/* Detail JSON Modal */}
       <Dialog open={!!selectedLog} onClose={() => setSelectedLog(null)} maxWidth="md" fullWidth>
-        <DialogTitle sx={{ fontWeight: 700 }}>
+        <DialogTitle>
           Audit Payload Detail — {selectedLog?.action} ({selectedLog?.entityType})
         </DialogTitle>
         <DialogContent dividers>
-          <Typography variant="subtitle2" fontWeight={700} gutterBottom>
+          <Typography variant="subtitle2" gutterBottom>
             New Values / Changes:
           </Typography>
           <Box
             component="pre"
             sx={{
               p: 2,
-              backgroundColor: '#0F172A',
-              color: '#38BDF8',
+              backgroundColor: COLORS.neutral.darkSurface,
+              color: COLORS.secondary.sky,
               borderRadius: 2,
               overflowX: 'auto',
               fontSize: '0.85rem',
@@ -262,15 +258,15 @@ export const AuditLogsPage: React.FC = () => {
 
           {selectedLog?.oldValues && (
             <>
-              <Typography variant="subtitle2" fontWeight={700} gutterBottom>
+              <Typography variant="subtitle2" gutterBottom>
                 Previous Values:
               </Typography>
               <Box
                 component="pre"
                 sx={{
                   p: 2,
-                  backgroundColor: '#0F172A',
-                  color: '#F87171',
+                  backgroundColor: COLORS.neutral.darkSurface,
+                  color: COLORS.feedback.errorLight,
                   borderRadius: 2,
                   overflowX: 'auto',
                   fontSize: '0.85rem',

@@ -27,7 +27,7 @@ import {
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { cyclesApi, CycleDto } from '../api/cyclesApi';
 import { PageHeader } from '../../../components/common/PageHeader';
-import { LoadingSpinner } from '../../../components/common/LoadingSpinner';
+import { ShimmerTableLoader } from '../../../components/common/ShimmerLoader';
 import { StatusBadge } from '../../../components/feedback/StatusBadge';
 
 export const CyclesPage: React.FC = () => {
@@ -121,25 +121,25 @@ export const CyclesPage: React.FC = () => {
       )}
 
       {isLoading ? (
-        <LoadingSpinner message="Loading review cycles..." />
+        <ShimmerTableLoader rows={5} columns={5} />
       ) : (
         <Card>
           <TableContainer component={Paper} elevation={0}>
             <Table>
               <TableHead sx={{ bgcolor: 'background.default' }}>
                 <TableRow>
-                  <TableCell sx={{ fontWeight: 700 }}>Cycle Code & Name</TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>Period</TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>Review Stages</TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>Status</TableCell>
-                  <TableCell sx={{ fontWeight: 700 }} align="right">Actions</TableCell>
+                  <TableCell>Cycle Code & Name</TableCell>
+                  <TableCell>Period</TableCell>
+                  <TableCell>Review Stages</TableCell>
+                  <TableCell>Status</TableCell>
+                  <TableCell align="right">Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {cycles.map((cycle) => (
                   <TableRow key={cycle._id} hover>
                     <TableCell>
-                      <Typography variant="body2" sx={{ fontWeight: 700 }}>
+                      <Typography variant="body2">
                         {cycle.code}
                       </Typography>
                       <Typography variant="caption" color="text.secondary">
@@ -201,7 +201,7 @@ export const CyclesPage: React.FC = () => {
 
       {/* Create Cycle Modal */}
       <Dialog open={isCreateOpen} onClose={() => setIsCreateOpen(false)} maxWidth="md" fullWidth>
-        <DialogTitle sx={{ fontWeight: 700 }}>Schedule Bi-Monthly Appraisal Cycle</DialogTitle>
+        <DialogTitle>Schedule Bi-Monthly Appraisal Cycle</DialogTitle>
         <DialogContent dividers>
           {formError && (
             <Alert severity="error" sx={{ mb: 2 }}>

@@ -13,9 +13,10 @@ import {
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { PageHeader } from '../../../components/common/PageHeader';
-import { LoadingSpinner } from '../../../components/common/LoadingSpinner';
+import { ShimmerListLoader } from '../../../components/common/ShimmerLoader';
 import { EmptyState } from '../../../components/common/EmptyState';
 import { OrgTreeNode, employeesApi } from '../api/employeesApi';
+import { COLORS } from '../../../constants/colors';
 
 interface TreeNodeProps {
   node: OrgTreeNode;
@@ -36,8 +37,8 @@ const TreeNode: React.FC<TreeNodeProps> = ({ node }) => {
           alignItems: 'center',
           gap: 2,
           minWidth: 300,
-          backgroundColor: '#FFFFFF',
-          borderColor: '#E2E8F0',
+          backgroundColor: COLORS.neutral.bgWhite,
+          borderColor: COLORS.neutral.borderLight,
           boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
         }}
       >
@@ -55,7 +56,7 @@ const TreeNode: React.FC<TreeNodeProps> = ({ node }) => {
 
         <Box sx={{ flexGrow: 1 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Typography variant="subtitle2" fontWeight={700}>
+            <Typography variant="subtitle2">
               {node.fullName || `${node.firstName} ${node.lastName}`}
             </Typography>
             <Chip label={node.level} size="small" variant="outlined" sx={{ height: 20, fontSize: '0.7rem' }} />
@@ -70,7 +71,7 @@ const TreeNode: React.FC<TreeNodeProps> = ({ node }) => {
         <Collapse in={expanded} timeout="auto" unmountOnExit>
           <Box
             sx={{
-              borderLeft: '2px dashed #CBD5E1',
+              borderLeft: `2px dashed ${COLORS.neutral.border}`,
               ml: 2,
               pl: 1,
             }}
@@ -112,7 +113,7 @@ export const OrgTreePage: React.FC = () => {
       <Card>
         <CardContent sx={{ p: 3 }}>
           {loading ? (
-            <LoadingSpinner minHeight="300px" />
+            <ShimmerListLoader rows={5} />
           ) : treeData.length === 0 ? (
             <EmptyState
               title="No hierarchy data available"

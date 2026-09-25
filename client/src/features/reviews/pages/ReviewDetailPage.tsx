@@ -12,7 +12,6 @@ import {
   CardHeader,
   Slider,
   Alert,
-  CircularProgress,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -30,6 +29,8 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { reviewsApi } from '../api/reviewsApi';
+import { COLORS } from '../../../constants/colors';
+import { ShimmerItem, ShimmerCardsLoader } from '../../../components/common/ShimmerLoader';
 
 export const ReviewDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -233,8 +234,23 @@ export const ReviewDetailPage: React.FC = () => {
 
   if (isLoading || !review) {
     return (
-      <Box sx={{ p: 4, display: 'flex', justifyContent: 'center' }}>
-        <CircularProgress />
+      <Box sx={{ p: { xs: 2, md: 3 } }}>
+        <ShimmerItem width={140} height={36} borderRadius={8} sx={{ mb: 2 }} />
+        <Card sx={{ p: 3, mb: 3, borderRadius: '16px' }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+              <ShimmerItem width={240} height={26} borderRadius={6} />
+              <ShimmerItem width={180} height={16} borderRadius={4} />
+            </Box>
+            <ShimmerItem width={90} height={28} borderRadius={14} />
+          </Box>
+          <Box sx={{ display: 'flex', gap: 3, mt: 2 }}>
+            <ShimmerItem width={120} height={20} borderRadius={4} />
+            <ShimmerItem width={140} height={20} borderRadius={4} />
+            <ShimmerItem width={110} height={20} borderRadius={4} />
+          </Box>
+        </Card>
+        <ShimmerCardsLoader count={3} />
       </Box>
     );
   }
@@ -252,19 +268,19 @@ export const ReviewDetailPage: React.FC = () => {
       </Button>
 
       {/* Header Card */}
-      <Paper sx={{ p: 3, mb: 3, borderRadius: 3, border: '1px solid #E2E8F0' }}>
+      <Paper sx={{ p: 3, mb: 3, borderRadius: 3, border: `1px solid ${COLORS.neutral.borderLight}` }}>
         <Grid container spacing={2} alignItems="center">
           <Grid item xs={12} md={8}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
-              <Typography variant="h4" fontWeight={700}>
+              <Typography variant="h4">
                 {review.employeeId?.firstName} {review.employeeId?.lastName}
               </Typography>
               <Chip
                 label={review.status.replace('_', ' ')}
                 color="primary"
-                sx={{ fontWeight: 700, borderRadius: 1.5 }}
+                sx={{ borderRadius: 1.5 }}
               />
-              {review.isDisputed && <Chip label="Disputed" color="error" sx={{ fontWeight: 700 }} />}
+              {review.isDisputed && <Chip label="Disputed" color="error" />}
             </Box>
             <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
               {review.employeeId?.designation} • {review.employeeId?.employeeCode} • Cycle:{' '}
@@ -274,16 +290,16 @@ export const ReviewDetailPage: React.FC = () => {
 
           {isPublished && (
             <Grid item xs={12} md={4} sx={{ textAlign: { md: 'right' } }}>
-              <Typography variant="caption" color="text.secondary" fontWeight={700}>
+              <Typography variant="caption" color="text.secondary">
                 Final Published Grade
               </Typography>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: { md: 'flex-end' }, gap: 1.5 }}>
                 <Chip
                   label={review.calculatedGrade}
                   color="success"
-                  sx={{ fontSize: '1.5rem', height: 44, fontWeight: 900, px: 1 }}
+                  sx={{ fontSize: '1.5rem', height: 44, px: 1 }}
                 />
-                <Typography variant="h6" fontWeight={700} color="text.secondary">
+                <Typography variant="h6" color="text.secondary">
                   ({review.finalScore?.toFixed(2)}%)
                 </Typography>
               </Box>
@@ -294,8 +310,8 @@ export const ReviewDetailPage: React.FC = () => {
 
       {/* Task & Performance Metrics Snapshot Panel */}
       {metrics && (
-        <Paper sx={{ p: 2.5, mb: 3, borderRadius: 3, border: '1px solid #E2E8F0', backgroundColor: '#F8FAFC' }}>
-          <Typography variant="subtitle2" fontWeight={700} color="text.primary" sx={{ mb: 1.5 }}>
+        <Paper sx={{ p: 2.5, mb: 3, borderRadius: 3, border: `1px solid ${COLORS.neutral.borderLight}`, backgroundColor: COLORS.neutral.bgHover }}>
+          <Typography variant="subtitle2" color="text.primary" sx={{ mb: 1.5 }}>
             <AccessTimeIcon sx={{ fontSize: 18, mr: 0.5, verticalAlign: 'text-bottom' }} /> Task & Effort
             Snapshot for Cycle Period
           </Typography>
@@ -304,7 +320,7 @@ export const ReviewDetailPage: React.FC = () => {
               <Typography variant="caption" color="text.secondary">
                 Total Logged Hours
               </Typography>
-              <Typography variant="h6" fontWeight={700}>
+              <Typography variant="h6">
                 {metrics.totalLoggedHours}h
               </Typography>
             </Grid>
@@ -312,7 +328,7 @@ export const ReviewDetailPage: React.FC = () => {
               <Typography variant="caption" color="text.secondary">
                 Billable Hours (%):
               </Typography>
-              <Typography variant="h6" fontWeight={700} color="primary.main">
+              <Typography variant="h6" color="primary.main">
                 {metrics.billableHours}h ({metrics.billablePercentage?.toFixed(1)}%)
               </Typography>
             </Grid>
@@ -320,7 +336,7 @@ export const ReviewDetailPage: React.FC = () => {
               <Typography variant="caption" color="text.secondary">
                 Tasks Completed
               </Typography>
-              <Typography variant="h6" fontWeight={700}>
+              <Typography variant="h6">
                 {metrics.tasksCompleted}
               </Typography>
             </Grid>
@@ -330,7 +346,6 @@ export const ReviewDetailPage: React.FC = () => {
               </Typography>
               <Typography
                 variant="h6"
-                fontWeight={700}
                 color={metrics.missedDeadlines > 0 ? 'error.main' : 'success.main'}
               >
                 {metrics.missedDeadlines}
@@ -347,7 +362,7 @@ export const ReviewDetailPage: React.FC = () => {
       )}
 
       {/* Criteria Evaluation Cards */}
-      <Typography variant="h5" fontWeight={700} sx={{ mb: 2 }}>
+      <Typography variant="h5" sx={{ mb: 2 }}>
         Assessment Criteria Evaluation
       </Typography>
 
@@ -360,29 +375,29 @@ export const ReviewDetailPage: React.FC = () => {
         const currentComment = ratings[c._id]?.comment || '';
 
         return (
-          <Card key={c._id} sx={{ mb: 2.5, borderRadius: 3, border: '1px solid #E2E8F0', boxShadow: 'none' }}>
+          <Card key={c._id} sx={{ mb: 2.5, borderRadius: 3, border: `1px solid ${COLORS.neutral.borderLight}`, boxShadow: 'none' }}>
             <CardHeader
               title={
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Typography variant="subtitle1" fontWeight={700}>
+                  <Typography variant="subtitle1">
                     {c.name}
                   </Typography>
                   <Chip label={`Weight: ${c.weight}%`} size="small" variant="outlined" />
                 </Box>
               }
               subheader={c.description}
-              sx={{ backgroundColor: '#F8FAFC', borderBottom: '1px solid #E2E8F0' }}
+              sx={{ backgroundColor: COLORS.neutral.bgHover, borderBottom: `1px solid ${COLORS.neutral.borderLight}` }}
             />
             <CardContent sx={{ p: 3 }}>
               {/* If Senior or PM or Published, show comparative history */}
               {(permissions?.canSubmitSenior || permissions?.canSubmitPM || isPublished) && (
-                <Grid container spacing={2} sx={{ mb: 2.5, p: 1.5, backgroundColor: '#F1F5F9', borderRadius: 2 }}>
+                <Grid container spacing={2} sx={{ mb: 2.5, p: 1.5, backgroundColor: COLORS.neutral.bgMuted, borderRadius: 2 }}>
                   {selfRating && (
                     <Grid item xs={12} sm={4}>
-                      <Typography variant="caption" color="text.secondary" fontWeight={700}>
+                      <Typography variant="caption" color="text.secondary">
                         Self Score:
                       </Typography>
-                      <Typography variant="body2" fontWeight={600}>
+                      <Typography variant="body2">
                         {selfRating.score} / 5
                       </Typography>
                       <Typography variant="caption" color="text.secondary">
@@ -392,10 +407,10 @@ export const ReviewDetailPage: React.FC = () => {
                   )}
                   {seniorRating && (permissions?.canSubmitPM || isPublished) && (
                     <Grid item xs={12} sm={4}>
-                      <Typography variant="caption" color="primary.main" fontWeight={700}>
+                      <Typography variant="caption" color="primary.main">
                         Senior Score:
                       </Typography>
-                      <Typography variant="body2" fontWeight={600} color="primary.main">
+                      <Typography variant="body2" color="primary.main">
                         {seniorRating.score} / 5
                       </Typography>
                       <Typography variant="caption" color="text.secondary">
@@ -405,10 +420,10 @@ export const ReviewDetailPage: React.FC = () => {
                   )}
                   {pmRating && isPublished && (
                     <Grid item xs={12} sm={4}>
-                      <Typography variant="caption" color="secondary.main" fontWeight={700}>
+                      <Typography variant="caption" color="secondary.main">
                         PM Score:
                       </Typography>
-                      <Typography variant="body2" fontWeight={600} color="secondary.main">
+                      <Typography variant="body2" color="secondary.main">
                         {pmRating.score} / 5
                       </Typography>
                       <Typography variant="caption" color="text.secondary">
@@ -422,7 +437,7 @@ export const ReviewDetailPage: React.FC = () => {
               {/* Active reviewer score input */}
               {(permissions?.canSubmitSelf || permissions?.canSubmitSenior || permissions?.canSubmitPM) && (
                 <Box>
-                  <Typography variant="subtitle2" fontWeight={700} gutterBottom>
+                  <Typography variant="subtitle2" gutterBottom>
                     Your Score (1 to 5): {currentVal} / 5
                   </Typography>
                   <Slider
@@ -462,8 +477,8 @@ export const ReviewDetailPage: React.FC = () => {
       })}
 
       {/* Additional Feedback & Goals Section */}
-      <Paper sx={{ p: 3, mb: 3, borderRadius: 3, border: '1px solid #E2E8F0' }}>
-        <Typography variant="h6" fontWeight={700} sx={{ mb: 2 }}>
+      <Paper sx={{ p: 3, mb: 3, borderRadius: 3, border: `1px solid ${COLORS.neutral.borderLight}` }}>
+        <Typography variant="h6" sx={{ mb: 2 }}>
           Achievements, Growth & Action Items
         </Typography>
         <Grid container spacing={2}>
@@ -492,7 +507,7 @@ export const ReviewDetailPage: React.FC = () => {
         </Grid>
 
         {permissions?.canSubmitPM && (
-          <Box sx={{ mt: 2, pt: 2, borderTop: '1px solid #E2E8F0' }}>
+          <Box sx={{ mt: 2, pt: 2, borderTop: `1px solid ${COLORS.neutral.borderLight}` }}>
             <FormControlLabel
               control={
                 <Checkbox
@@ -616,7 +631,7 @@ export const ReviewDetailPage: React.FC = () => {
 
       {/* Send Back Dialog */}
       <Dialog open={sendBackDialogOpen} onClose={() => setSendBackDialogOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle sx={{ fontWeight: 700 }}>Send Back Review to Senior Manager</DialogTitle>
+        <DialogTitle>Send Back Review to Senior Manager</DialogTitle>
         <DialogContent dividers>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
             You can send back this review to the Senior Manager for re-evaluation (Max 1 time). Please provide clear rationale.
@@ -645,7 +660,7 @@ export const ReviewDetailPage: React.FC = () => {
 
       {/* Acknowledge Dialog */}
       <Dialog open={acknowledgeDialogOpen} onClose={() => setAcknowledgeDialogOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle sx={{ fontWeight: 700 }}>Acknowledge Performance Appraisal</DialogTitle>
+        <DialogTitle>Acknowledge Performance Appraisal</DialogTitle>
         <DialogContent dividers>
           <Typography variant="body2" sx={{ mb: 2 }}>
             I confirm that I have reviewed my appraisal ratings and final grade for {review.cycleId?.name}.
@@ -674,7 +689,7 @@ export const ReviewDetailPage: React.FC = () => {
 
       {/* Dispute Dialog */}
       <Dialog open={disputeDialogOpen} onClose={() => setDisputeDialogOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle sx={{ fontWeight: 700, color: 'error.main' }}>Raise Review Dispute</DialogTitle>
+        <DialogTitle sx={{ color: 'error.main' }}>Raise Review Dispute</DialogTitle>
         <DialogContent dividers>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
             If you disagree with the final assessment, you can raise an official review dispute for HR Admin mediation.

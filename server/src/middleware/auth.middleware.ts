@@ -37,7 +37,9 @@ export const authenticate = async (req: Request, _res: Response, next: NextFunct
       throw AppError.unauthorized('Invalid or expired authentication token.');
     }
 
-    const user = await User.findOne({ _id: payload.userId, isDeleted: false });
+    const user = await User.findOne({ _id: payload.userId, isDeleted: false })
+      .populate('departmentId', 'name code')
+      .populate('managerId', 'firstName lastName email employeeCode designation');
     if (!user) {
       throw AppError.unauthorized('The user belonging to this token no longer exists.');
     }

@@ -25,7 +25,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { PageHeader } from '../../../components/common/PageHeader';
 import { StatusBadge } from '../../../components/feedback/StatusBadge';
-import { LoadingSpinner } from '../../../components/common/LoadingSpinner';
+import { ShimmerTableLoader } from '../../../components/common/ShimmerLoader';
 import { EmptyState } from '../../../components/common/EmptyState';
 import { Project, projectsApi } from '../api/projectsApi';
 import { ProjectFormDialog } from '../components/ProjectFormDialog';
@@ -188,17 +188,18 @@ export const ProjectsPage: React.FC = () => {
         </CardContent>
       </Card>
 
-      <Card>
-        {loading ? (
-          <LoadingSpinner minHeight="300px" />
-        ) : projects.length === 0 ? (
+      {loading ? (
+        <ShimmerTableLoader rows={6} columns={6} />
+      ) : projects.length === 0 ? (
+        <Card>
           <EmptyState
             title="No projects found"
             description="Try adjusting your filters or create a new project."
           />
-        ) : (
-          <>
-            <TableContainer>
+        </Card>
+      ) : (
+        <Card>
+          <TableContainer>
               <Table>
                 <TableHead>
                   <TableRow>
@@ -214,11 +215,11 @@ export const ProjectsPage: React.FC = () => {
                 <TableBody>
                   {projects.map((prj) => (
                     <TableRow key={prj._id} hover>
-                      <TableCell sx={{ fontWeight: 700, color: 'primary.main' }}>
+                      <TableCell sx={{ color: 'primary.main' }}>
                         {prj.projectCode}
                       </TableCell>
                       <TableCell>
-                        <Typography variant="subtitle2" fontWeight={600}>
+                        <Typography variant="subtitle2">
                           {prj.name}
                         </Typography>
                         {prj.description && (
@@ -281,9 +282,8 @@ export const ProjectsPage: React.FC = () => {
               }}
               rowsPerPageOptions={[5, 10, 25, 50]}
             />
-          </>
+          </Card>
         )}
-      </Card>
 
       <ProjectFormDialog
         open={dialogOpen}

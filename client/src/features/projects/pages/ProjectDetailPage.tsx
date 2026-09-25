@@ -180,7 +180,7 @@ export const ProjectDetailPage: React.FC = () => {
                 <Typography variant="subtitle2" color="text.secondary" gutterBottom>
                   Project Manager
                 </Typography>
-                <Typography variant="body1" fontWeight={600}>
+                <Typography variant="body1">
                   {project.projectManagerId?.firstName} {project.projectManagerId?.lastName} ({project.projectManagerId?.employeeCode})
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
@@ -192,7 +192,7 @@ export const ProjectDetailPage: React.FC = () => {
                 <Typography variant="subtitle2" color="text.secondary" gutterBottom>
                   Project Lead / Architect
                 </Typography>
-                <Typography variant="body1" fontWeight={600}>
+                <Typography variant="body1">
                   {project.projectLeadId ? `${project.projectLeadId.firstName} ${project.projectLeadId.lastName}` : 'Unassigned'}
                 </Typography>
               </Grid>
@@ -208,7 +208,7 @@ export const ProjectDetailPage: React.FC = () => {
                 <Typography variant="subtitle2" color="text.secondary" gutterBottom>
                   Start Date
                 </Typography>
-                <Typography variant="body1" fontWeight={500}>
+                <Typography variant="body1">
                   {new Date(project.startDate).toLocaleDateString()}
                 </Typography>
               </Grid>
@@ -217,7 +217,7 @@ export const ProjectDetailPage: React.FC = () => {
                 <Typography variant="subtitle2" color="text.secondary" gutterBottom>
                   Target End Date
                 </Typography>
-                <Typography variant="body1" fontWeight={500}>
+                <Typography variant="body1">
                   {project.endDate ? new Date(project.endDate).toLocaleDateString() : 'Ongoing'}
                 </Typography>
               </Grid>
@@ -238,7 +238,7 @@ export const ProjectDetailPage: React.FC = () => {
         {activeTab === 1 && (
           <Box sx={{ p: 3 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2.5 }}>
-              <Typography variant="h6" fontWeight={700}>
+              <Typography variant="h6">
                 Assigned Team Members
               </Typography>
               {isPMorHR && (
@@ -277,7 +277,7 @@ export const ProjectDetailPage: React.FC = () => {
                               {(m.userId?.firstName?.charAt(0) || m.userId?.email?.charAt(0) || 'U').toUpperCase()}
                             </Avatar>
                             <Box>
-                              <Typography variant="subtitle2" fontWeight={600}>
+                              <Typography variant="subtitle2">
                                 {m.userId?.fullName || `${m.userId?.firstName || ''} ${m.userId?.lastName || ''}`.trim() || m.userId?.email || 'Team Member'}
                               </Typography>
                               <Typography variant="caption" color="text.secondary">
@@ -286,7 +286,7 @@ export const ProjectDetailPage: React.FC = () => {
                             </Box>
                           </Box>
                         </TableCell>
-                        <TableCell sx={{ fontWeight: 600 }}>{m.projectRole}</TableCell>
+                        <TableCell>{m.projectRole}</TableCell>
                         <TableCell>
                           <Chip
                             label={`${m.allocationPct}%`}
@@ -333,7 +333,7 @@ export const ProjectDetailPage: React.FC = () => {
         {activeTab === 2 && (
           <Box sx={{ p: 3 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2.5 }}>
-              <Typography variant="h6" fontWeight={700}>
+              <Typography variant="h6">
                 Project Document Library
               </Typography>
               <Button
@@ -364,7 +364,7 @@ export const ProjectDetailPage: React.FC = () => {
                   <TableBody>
                     {documents.map((doc) => (
                       <TableRow key={doc._id}>
-                        <TableCell sx={{ fontWeight: 600 }}>
+                        <TableCell>
                           {doc.title}
                           {doc.description && (
                             <Typography variant="caption" color="text.secondary" display="block">

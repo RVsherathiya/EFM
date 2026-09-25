@@ -1,6 +1,6 @@
 {
   "name": "efm-server",
-  "version": "1.0.0",
+  "version": "3.0.0",
   "description": "Employee Feedback Portal Backend API",
   "main": "dist/app/server.js",
   "scripts": {

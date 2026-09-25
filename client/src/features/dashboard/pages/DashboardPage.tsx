@@ -12,7 +12,6 @@ import {
   ListItem,
   ListItemText,
   ListItemIcon,
-  CircularProgress,
   Avatar,
   Stack,
   LinearProgress,
@@ -54,10 +53,12 @@ import { cyclesApi } from '../../cycles/api/cyclesApi';
 import { reviewsApi } from '../../reviews/api/reviewsApi';
 import { projectsApi, Project } from '../../projects/api/projectsApi';
 import { reportsApi } from '../../reports/api/reportsApi';
-
-const CHART_COLORS = ['#2563EB', '#7C3AED', '#10B981', '#F59E0B', '#EF4444', '#06B6D4', '#8B5CF6'];
+import { useTranslation } from 'react-i18next';
+import { COLORS, CHART_COLORS } from '../../../constants/colors';
+import { ShimmerItem } from '../../../components/common/ShimmerLoader';
 
 export const DashboardPage: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { user } = useAuth();
@@ -154,11 +155,11 @@ export const DashboardPage: React.FC = () => {
       {/* Top Banner Header */}
       <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'flex-start', sm: 'center' }, gap: 2, mb: 3 }}>
         <PageHeader
-          title={`Welcome back, ${user?.fullName || 'Colleague'}!`}
-          subtitle="Track your bi-monthly appraisal reviews, project assignments, timesheet compliance, and managerial actions."
+          title={t('dashboard.welcome_user', { name: user?.fullName || t('dashboard.colleague_fallback') })}
+          subtitle={t('dashboard.subtitle')}
         />
         <Stack direction="row" spacing={1.5} alignItems="center" sx={{ width: { xs: '100%', sm: 'auto' }, justifyContent: { xs: 'flex-end', sm: 'flex-start' } }}>
-          <Tooltip title="Refresh Dashboard Data">
+          <Tooltip title={t('dashboard.refresh_tooltip')}>
             <IconButton onClick={handleRefreshData} size="small" sx={{ border: '1px solid', borderColor: 'divider', bgcolor: 'background.paper' }}>
               <RefreshOutlinedIcon fontSize="small" />
             </IconButton>
@@ -170,7 +171,7 @@ export const DashboardPage: React.FC = () => {
             onClick={() => navigate('/tasks/timesheet')}
             sx={{ px: 2, py: 0.8, borderRadius: 2 }}
           >
-            Log Timesheet
+            {t('dashboard.log_timesheet')}
           </Button>
         </Stack>
       </Box>
@@ -183,7 +184,7 @@ export const DashboardPage: React.FC = () => {
             sx={{
               height: '100%',
               borderRadius: 3,
-              border: '1px solid #E2E8F0',
+              border: `1px solid ${COLORS.neutral.borderLight}`,
               boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
               transition: 'transform 0.2s, box-shadow 0.2s',
               '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' },
@@ -191,22 +192,22 @@ export const DashboardPage: React.FC = () => {
           >
             <CardContent sx={{ p: 2.5 }}>
               <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1.5 }}>
-                <Typography variant="caption" color="text.secondary" fontWeight={700} textTransform="uppercase" letterSpacing="0.05em">
-                  Review Cycle
+                <Typography variant="caption" color="text.secondary" textTransform="uppercase" letterSpacing="0.05em">
+                  {t('dashboard.review_cycle')}
                 </Typography>
                 <Avatar sx={{ width: 36, height: 36, bgcolor: 'rgba(37, 99, 235, 0.1)', color: 'primary.main' }}>
                   <RateReviewOutlinedIcon fontSize="small" />
                 </Avatar>
               </Stack>
-              <Typography variant="h6" fontWeight={700} noWrap title={activeCycle ? activeCycle.name : 'No Active Cycle'}>
-                {activeCycle ? activeCycle.name : 'No Active Cycle'}
+              <Typography variant="h6" noWrap title={activeCycle ? activeCycle.name : t('dashboard.no_active_cycle')}>
+                {activeCycle ? activeCycle.name : t('dashboard.no_active_cycle')}
               </Typography>
               <Stack direction="row" alignItems="center" spacing={1} sx={{ mt: 0.8 }}>
                 <Chip
                   label={activeCycle?.status || 'PLANNED'}
                   size="small"
                   color={activeCycle?.status === 'OPEN' ? 'success' : 'primary'}
-                  sx={{ height: 20, fontSize: '0.7rem', fontWeight: 700 }}
+                  sx={{ height: 20, fontSize: '0.7rem'}}
                 />
                 <Typography variant="caption" color="text.secondary">
                   {activeCycle?.year ? `FY${activeCycle.year}` : 'Current Period'}
@@ -222,7 +223,7 @@ export const DashboardPage: React.FC = () => {
             sx={{
               height: '100%',
               borderRadius: 3,
-              border: '1px solid #E2E8F0',
+              border: `1px solid ${COLORS.neutral.borderLight}`,
               boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
               transition: 'transform 0.2s, box-shadow 0.2s',
               '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' },
@@ -230,22 +231,22 @@ export const DashboardPage: React.FC = () => {
           >
             <CardContent sx={{ p: 2.5 }}>
               <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1.5 }}>
-                <Typography variant="caption" color="text.secondary" fontWeight={700} textTransform="uppercase" letterSpacing="0.05em">
-                  Period Timesheet
+                <Typography variant="caption" color="text.secondary" textTransform="uppercase" letterSpacing="0.05em">
+                  {t('timesheet.title')}
                 </Typography>
                 <Avatar sx={{ width: 36, height: 36, bgcolor: 'rgba(16, 185, 129, 0.1)', color: 'success.main' }}>
                   <AssignmentOutlinedIcon fontSize="small" />
                 </Avatar>
               </Stack>
-              <Typography variant="h5" fontWeight={700}>
+              <Typography variant="h5">
                 {loadingSummary ? '...' : `${totalHours.toFixed(1)} hrs`}
               </Typography>
               <Box sx={{ mt: 1 }}>
                 <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 0.5 }}>
                   <Typography variant="caption" color="text.secondary">
-                    Billable Rate:
+                    {t('dashboard.billable_rate')}:
                   </Typography>
-                  <Typography variant="caption" fontWeight={700} color="success.main">
+                  <Typography variant="caption" color="success.main">
                     {billablePct.toFixed(1)}%
                   </Typography>
                 </Stack>
@@ -266,7 +267,7 @@ export const DashboardPage: React.FC = () => {
             sx={{
               height: '100%',
               borderRadius: 3,
-              border: '1px solid #E2E8F0',
+              border: `1px solid ${COLORS.neutral.borderLight}`,
               boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
               transition: 'transform 0.2s, box-shadow 0.2s',
               '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' },
@@ -274,18 +275,21 @@ export const DashboardPage: React.FC = () => {
           >
             <CardContent sx={{ p: 2.5 }}>
               <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1.5 }}>
-                <Typography variant="caption" color="text.secondary" fontWeight={700} textTransform="uppercase" letterSpacing="0.05em">
-                  Active Projects
+                <Typography variant="caption" color="text.secondary" textTransform="uppercase" letterSpacing="0.05em">
+                  {t('dashboard.assigned_projects')}
                 </Typography>
                 <Avatar sx={{ width: 36, height: 36, bgcolor: 'rgba(124, 58, 237, 0.1)', color: 'secondary.main' }}>
                   <FolderOutlinedIcon fontSize="small" />
                 </Avatar>
               </Stack>
-              <Typography variant="h5" fontWeight={700}>
-                {loadingProjects ? '...' : `${myProjects.length} Projects`}
+              <Typography variant="h5">
+                {loadingProjects ? '...' : `${myProjects.length} ${t('projects.title')}`}
               </Typography>
               <Typography variant="caption" color="text.secondary" display="block" sx={{ mt: 0.8 }}>
-                {myProjects.filter((p) => p.type === 'CLIENT').length} Client • {myProjects.filter((p) => p.type === 'INTERNAL').length} Internal
+                {t('dashboard.client_internal_split', {
+                  client: myProjects.filter((p) => p.type === 'CLIENT').length,
+                  internal: myProjects.filter((p) => p.type === 'INTERNAL').length,
+                })}
               </Typography>
             </CardContent>
           </Card>
@@ -297,7 +301,7 @@ export const DashboardPage: React.FC = () => {
             sx={{
               height: '100%',
               borderRadius: 3,
-              border: '1px solid #E2E8F0',
+              border: `1px solid ${COLORS.neutral.borderLight}`,
               boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
               transition: 'transform 0.2s, box-shadow 0.2s',
               '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' },
@@ -305,19 +309,19 @@ export const DashboardPage: React.FC = () => {
           >
             <CardContent sx={{ p: 2.5 }}>
               <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1.5 }}>
-                <Typography variant="caption" color="text.secondary" fontWeight={700} textTransform="uppercase" letterSpacing="0.05em">
-                  Performance Grade
+                <Typography variant="caption" color="text.secondary" textTransform="uppercase" letterSpacing="0.05em">
+                  {t('reviews.final_grade')}
                 </Typography>
                 <Avatar sx={{ width: 36, height: 36, bgcolor: 'rgba(245, 158, 11, 0.1)', color: 'warning.main' }}>
                   <TrendingUpOutlinedIcon fontSize="small" />
                 </Avatar>
               </Stack>
               <Stack direction="row" alignItems="baseline" spacing={1}>
-                <Typography variant="h5" fontWeight={800} color="primary.main">
-                  {myReviews.find((r) => r.calculatedGrade)?.calculatedGrade || 'Pending'}
+                <Typography variant="h5" color="primary.main">
+                  {myReviews.find((r) => r.calculatedGrade)?.calculatedGrade || t('dashboard.pending')}
                 </Typography>
                 {currentReview?.finalScore && (
-                  <Typography variant="caption" color="text.secondary" fontWeight={600}>
+                  <Typography variant="caption" color="text.secondary">
                     ({currentReview.finalScore.toFixed(2)}/5.0)
                   </Typography>
                 )}
@@ -334,14 +338,14 @@ export const DashboardPage: React.FC = () => {
       <Grid container spacing={3} sx={{ mb: 3.5 }}>
         {/* Main Interactive Chart (Effort & Categories) */}
         <Grid item xs={12} lg={8}>
-          <Paper sx={{ p: { xs: 2, sm: 3 }, borderRadius: 3, border: '1px solid #E2E8F0', height: '100%' }}>
+          <Paper sx={{ p: { xs: 2, sm: 3 }, borderRadius: 3, border: `1px solid ${COLORS.neutral.borderLight}`, height: '100%' }}>
             <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'flex-start', sm: 'center' }, gap: 1.5, mb: 2 }}>
               <Box>
-                <Typography variant="h6" fontWeight={700}>
-                  Workforce Effort & Category Analytics
+                <Typography variant="h6">
+                  {t('dashboard.project_effort_breakdown')}
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
-                  Real-time visualization of logged task distributions across active projects and activity types
+                  {t('dashboard.category_effort_distribution')}
                 </Typography>
               </Box>
               <Tabs
@@ -349,11 +353,11 @@ export const DashboardPage: React.FC = () => {
                 onChange={(_, v) => setActiveChartTab(v)}
                 sx={{
                   minHeight: 36,
-                  '& .MuiTab-root': { minHeight: 36, py: 0.5, px: 1.5, fontSize: '0.8rem', fontWeight: 600 },
+                  '& .MuiTab-root': { minHeight: 36, py: 0.5, px: 1.5, fontSize: '0.8rem'},
                 }}
               >
-                <Tab icon={<BarChartOutlinedIcon sx={{ fontSize: 18 }} />} iconPosition="start" label="Projects" />
-                <Tab icon={<PieChartOutlineOutlinedIcon sx={{ fontSize: 18 }} />} iconPosition="start" label="Categories" />
+                <Tab icon={<BarChartOutlinedIcon sx={{ fontSize: 18 }} />} iconPosition="start" label={t('projects.title')} />
+                <Tab icon={<PieChartOutlineOutlinedIcon sx={{ fontSize: 18 }} />} iconPosition="start" label={t('tasks.category')} />
               </Tabs>
             </Box>
 
@@ -364,27 +368,27 @@ export const DashboardPage: React.FC = () => {
                   <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
                     <HourglassEmptyOutlinedIcon sx={{ fontSize: 40, color: 'text.secondary', mb: 1 }} />
                     <Typography variant="body2" color="text.secondary">
-                      No project effort data logged for this period yet.
+                      {t('empty_states.no_tasks')}
                     </Typography>
                   </Box>
                 ) : (
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={effortChartData} margin={{ top: 10, right: 10, left: -20, bottom: 20 }}>
-                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F1F5F9" />
-                      <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#64748B' }} interval={0} angle={-15} textAnchor="end" />
-                      <YAxis tick={{ fontSize: 11, fill: '#64748B' }} />
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={COLORS.neutral.bgMuted} />
+                      <XAxis dataKey="name" tick={{ fontSize: 11, fill: COLORS.neutral.textSlate }} interval={0} angle={-15} textAnchor="end" />
+                      <YAxis tick={{ fontSize: 11, fill: COLORS.neutral.textSlate }} />
                       <ChartTooltip
                         contentStyle={{
-                          backgroundColor: '#1E293B',
+                          backgroundColor: COLORS.neutral.darkCard,
                           borderRadius: 8,
                           border: 'none',
-                          color: '#FFFFFF',
+                          color: COLORS.neutral.textWhite,
                           fontSize: 12,
                         }}
                       />
                       <Legend wrapperStyle={{ fontSize: 12, paddingTop: 10 }} />
-                      <Bar dataKey="Billable" stackId="a" fill="#2563EB" radius={[0, 0, 0, 0]} />
-                      <Bar dataKey="NonBillable" stackId="a" fill="#94A3B8" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="Billable" stackId="a" fill={COLORS.accent.blueRoyal} radius={[0, 0, 0, 0]} />
+                      <Bar dataKey="NonBillable" stackId="a" fill={COLORS.neutral.textMuted} radius={[4, 4, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 )}
@@ -398,7 +402,7 @@ export const DashboardPage: React.FC = () => {
                   <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
                     <HourglassEmptyOutlinedIcon sx={{ fontSize: 40, color: 'text.secondary', mb: 1 }} />
                     <Typography variant="body2" color="text.secondary">
-                      No category breakdown available yet.
+                      {t('empty_states.no_tasks')}
                     </Typography>
                   </Box>
                 ) : (
@@ -420,10 +424,10 @@ export const DashboardPage: React.FC = () => {
                       <ChartTooltip
                         formatter={(val: number) => [`${val} hours`, 'Effort']}
                         contentStyle={{
-                          backgroundColor: '#1E293B',
+                          backgroundColor: COLORS.neutral.darkCard,
                           borderRadius: 8,
                           border: 'none',
-                          color: '#FFFFFF',
+                          color: COLORS.neutral.textWhite,
                           fontSize: 12,
                         }}
                       />
@@ -438,23 +442,23 @@ export const DashboardPage: React.FC = () => {
 
         {/* Right Column: Timesheet Compliance & Approval Health */}
         <Grid item xs={12} lg={4}>
-          <Paper sx={{ p: 3, borderRadius: 3, border: '1px solid #E2E8F0', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+          <Paper sx={{ p: 3, borderRadius: 3, border: `1px solid ${COLORS.neutral.borderLight}`, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <Box>
-              <Typography variant="h6" fontWeight={700} gutterBottom>
-                Timesheet Health & Approvals
+              <Typography variant="h6" gutterBottom>
+                {t('dashboard.hours_breakdown')}
               </Typography>
               <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 2.5 }}>
-                Current period compliance and timesheet submission audit
+                {t('dashboard.category_effort_distribution')}
               </Typography>
 
               {/* Progress Breakdown */}
               <Stack spacing={2}>
                 <Box>
                   <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 0.5 }}>
-                    <Typography variant="subtitle2" fontWeight={600}>
-                      Approved Hours
+                    <Typography variant="subtitle2">
+                      {t('dashboard.approved')} {t('dashboard.total_hours')}
                     </Typography>
-                    <Typography variant="caption" fontWeight={700} color="success.main">
+                    <Typography variant="caption" color="success.main">
                       {approvedHours.toFixed(1)} hrs ({totalHours > 0 ? ((approvedHours / totalHours) * 100).toFixed(0) : 0}%)
                     </Typography>
                   </Stack>
@@ -468,10 +472,10 @@ export const DashboardPage: React.FC = () => {
 
                 <Box>
                   <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 0.5 }}>
-                    <Typography variant="subtitle2" fontWeight={600}>
-                      Pending Approval
+                    <Typography variant="subtitle2">
+                      {t('dashboard.pending')} {t('common.status')}
                     </Typography>
-                    <Typography variant="caption" fontWeight={700} color="warning.main">
+                    <Typography variant="caption" color="warning.main">
                       {pendingHours.toFixed(1)} hrs ({totalHours > 0 ? ((pendingHours / totalHours) * 100).toFixed(0) : 0}%)
                     </Typography>
                   </Stack>
@@ -483,21 +487,21 @@ export const DashboardPage: React.FC = () => {
                   />
                 </Box>
 
-                <Box sx={{ p: 2, bgcolor: '#F8FAFC', borderRadius: 2, border: '1px solid #E2E8F0', mt: 1 }}>
+                <Box sx={{ p: 2, bgcolor: COLORS.neutral.bgHover, borderRadius: 2, border: `1px solid ${COLORS.neutral.borderLight}`, mt: 1 }}>
                   <Stack direction="row" justifyContent="space-between" alignItems="center">
                     <Box>
                       <Typography variant="caption" color="text.secondary">
-                        Total Tasks Logged
+                        {t('dashboard.total_hours')}
                       </Typography>
-                      <Typography variant="h6" fontWeight={700}>
+                      <Typography variant="h6">
                         {billableSummary?.totalTasks ?? 0}
                       </Typography>
                     </Box>
                     <Box sx={{ textAlign: 'right' }}>
                       <Typography variant="caption" color="text.secondary">
-                        Billable Split
+                        {t('dashboard.billable')} / {t('dashboard.non_billable')}
                       </Typography>
-                      <Typography variant="h6" fontWeight={700} color="primary.main">
+                      <Typography variant="h6" color="primary.main">
                         {billableHours.toFixed(1)}h / {nonBillableHours.toFixed(1)}h
                       </Typography>
                     </Box>
@@ -513,7 +517,7 @@ export const DashboardPage: React.FC = () => {
               onClick={() => navigate('/reports')}
               sx={{ mt: 2, borderRadius: 2 }}
             >
-              View Full Analytics Report
+              {t('dashboard.view_full_report')}
             </Button>
           </Paper>
         </Grid>
@@ -524,23 +528,25 @@ export const DashboardPage: React.FC = () => {
         {/* Left Column: Active Performance Review & Quick Actions */}
         <Grid item xs={12} md={7}>
           {/* Active Performance Review Card */}
-          <Paper sx={{ p: { xs: 2.5, sm: 3 }, mb: 3, borderRadius: 3, border: '1px solid #E2E8F0' }}>
-            <Typography variant="h6" fontWeight={700} gutterBottom>
-              My Performance Review
+          <Paper sx={{ p: { xs: 2.5, sm: 3 }, mb: 3, borderRadius: 3, border: `1px solid ${COLORS.neutral.borderLight}` }}>
+            <Typography variant="h6" gutterBottom>
+              {t('dashboard.my_reviews')}
             </Typography>
             {loadingReviews ? (
-              <Box sx={{ display: 'flex', justifyContent: 'center', py: 3 }}>
-                <CircularProgress size={30} />
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, py: 2 }}>
+                <ShimmerItem width="40%" height={22} />
+                <ShimmerItem width="85%" height={16} />
+                <ShimmerItem width="60%" height={16} />
               </Box>
             ) : currentReview ? (
               <Box sx={{ mt: 1.5 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}>
                   <Box>
-                    <Typography variant="subtitle1" fontWeight={700}>
-                      {currentReview.cycleId?.name || 'Current Appraisal Cycle'}
+                    <Typography variant="subtitle1">
+                      {currentReview.cycleId?.name || t('reviews.cycle')}
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
-                      Review ID: {currentReview._id?.slice(-6).toUpperCase()}
+                      ID: {currentReview._id?.slice(-6).toUpperCase()}
                     </Typography>
                   </Box>
                   <Chip
@@ -553,28 +559,27 @@ export const DashboardPage: React.FC = () => {
                         : 'primary'
                     }
                     size="small"
-                    sx={{ fontWeight: 700 }}
                   />
                 </Box>
 
-                <Box sx={{ p: 2, bgcolor: '#F8FAFC', borderRadius: 2, border: '1px solid #E2E8F0', mb: 2 }}>
+                <Box sx={{ p: 2, bgcolor: COLORS.neutral.bgHover, borderRadius: 2, border: `1px solid ${COLORS.neutral.borderLight}`, mb: 2 }}>
                   <Grid container spacing={2}>
                     <Grid item xs={6}>
                       <Typography variant="caption" color="text.secondary" display="block">
-                        Senior Reviewer
+                        {t('employees.manager')}
                       </Typography>
-                      <Typography variant="body2" fontWeight={600}>
+                      <Typography variant="body2">
                         {currentReview.seniorId
                           ? `${currentReview.seniorId.firstName} ${currentReview.seniorId.lastName}`
-                          : 'Line Manager'}
+                          : t('employees.manager')}
                       </Typography>
                     </Grid>
                     <Grid item xs={6}>
                       <Typography variant="caption" color="text.secondary" display="block">
-                        Calculated Grade
+                        {t('reviews.final_grade')}
                       </Typography>
-                      <Typography variant="body2" fontWeight={700} color="primary.main">
-                        {currentReview.calculatedGrade || 'In Progress'}
+                      <Typography variant="body2" color="primary.main">
+                        {currentReview.calculatedGrade || t('dashboard.pending')}
                       </Typography>
                     </Grid>
                   </Grid>
@@ -587,26 +592,26 @@ export const DashboardPage: React.FC = () => {
                   sx={{ borderRadius: 2, px: 2.5 }}
                 >
                   {currentReview.status === 'SELF_PENDING'
-                    ? 'Complete Self Assessment'
+                    ? t('reviews.submit_appraisal')
                     : currentReview.status === 'PUBLISHED'
-                    ? 'View Published Grade & Acknowledge'
-                    : 'View Review Progress'}
+                    ? t('dashboard.view_my_review')
+                    : t('dashboard.view_my_review')}
                 </Button>
               </Box>
             ) : (
               <Box sx={{ py: 3, textAlign: 'center' }}>
                 <RateReviewOutlinedIcon sx={{ fontSize: 36, color: 'text.secondary', mb: 1 }} />
                 <Typography variant="body2" color="text.secondary">
-                  No active appraisal reviews assigned currently. Reviews are automatically scheduled when an appraisal cycle opens.
+                  {t('empty_states.no_reviews')}
                 </Typography>
               </Box>
             )}
           </Paper>
 
           {/* Quick Action Navigation Grid */}
-          <Paper sx={{ p: { xs: 2.5, sm: 3 }, borderRadius: 3, border: '1px solid #E2E8F0' }}>
-            <Typography variant="h6" fontWeight={700} gutterBottom>
-              Workforce Action Center
+          <Paper sx={{ p: { xs: 2.5, sm: 3 }, borderRadius: 3, border: `1px solid ${COLORS.neutral.borderLight}` }}>
+            <Typography variant="h6" gutterBottom>
+              {t('nav.management_approvals')}
             </Typography>
             <Grid container spacing={2} sx={{ mt: 0.5 }}>
               <Grid item xs={12} sm={6}>
@@ -617,7 +622,7 @@ export const DashboardPage: React.FC = () => {
                   onClick={() => navigate('/tasks/timesheet')}
                   sx={{ py: 1.3, borderRadius: 2, justifyContent: 'flex-start', px: 2 }}
                 >
-                  Weekly Timesheet Grid
+                  {t('nav.weekly_timesheet')}
                 </Button>
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -628,7 +633,7 @@ export const DashboardPage: React.FC = () => {
                   onClick={() => navigate('/reviews')}
                   sx={{ py: 1.3, borderRadius: 2, justifyContent: 'flex-start', px: 2 }}
                 >
-                  My Appraisal History
+                  {t('nav.my_reviews')}
                 </Button>
               </Grid>
               {(isSenior || isPM) && (
@@ -642,7 +647,7 @@ export const DashboardPage: React.FC = () => {
                       onClick={() => navigate('/tasks/approvals')}
                       sx={{ py: 1.3, borderRadius: 2, justifyContent: 'flex-start', px: 2 }}
                     >
-                      Timesheet Approvals Queue
+                      {t('nav.task_approvals')}
                     </Button>
                   </Grid>
                   <Grid item xs={12} sm={6}>
@@ -654,7 +659,7 @@ export const DashboardPage: React.FC = () => {
                       onClick={() => navigate('/reviews/team')}
                       sx={{ py: 1.3, borderRadius: 2, justifyContent: 'flex-start', px: 2 }}
                     >
-                      Team Reviews ({pendingReviews.length})
+                      {t('nav.team_reviews')} ({pendingReviews.length})
                     </Button>
                   </Grid>
                 </>
@@ -669,7 +674,7 @@ export const DashboardPage: React.FC = () => {
                     onClick={() => navigate('/reviews/calibration')}
                     sx={{ py: 1.3, borderRadius: 2, justifyContent: 'flex-start', px: 2 }}
                   >
-                    HR Calibration & Overrides
+                    {t('nav.calibration')}
                   </Button>
                 </Grid>
               )}
@@ -686,15 +691,15 @@ export const DashboardPage: React.FC = () => {
                 p: 3,
                 mb: 3,
                 borderRadius: 3,
-                border: '1px solid #FED7AA',
-                backgroundColor: '#FFFBEB',
+                border: `1px solid ${COLORS.feedback.warningBorder}`,
+                backgroundColor: COLORS.feedback.warningBg,
               }}
             >
               <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1.5 }}>
-                <Typography variant="subtitle1" fontWeight={700} color="warning.dark">
-                  Pending Team Appraisals ({pendingReviews.length})
+                <Typography variant="subtitle1" color="warning.dark">
+                  {t('dashboard.pending_reviews_action')} ({pendingReviews.length})
                 </Typography>
-                <Chip label="Action Needed" color="warning" size="small" sx={{ fontWeight: 700, height: 22 }} />
+                <Chip label={t('dashboard.requires_scoring')} color="warning" size="small" sx={{ height: 22 }} />
               </Stack>
               <List disablePadding>
                 {pendingReviews.slice(0, 3).map((r) => (
@@ -710,14 +715,14 @@ export const DashboardPage: React.FC = () => {
                         onClick={() => navigate(`/reviews/${r._id}`)}
                         sx={{ fontSize: '0.75rem', px: 1.5, borderRadius: 1.5 }}
                       >
-                        Review
+                        {t('common.edit')}
                       </Button>
                     }
                   >
                     <ListItemText
                       primary={`${r.employeeId?.firstName} ${r.employeeId?.lastName}`}
                       secondary={`${r.employeeId?.designation} • ${r.status.replace('_', ' ')}`}
-                      primaryTypographyProps={{ fontWeight: 600, fontSize: '0.875rem' }}
+                      primaryTypographyProps={{ fontSize: '0.875rem' }}
                       secondaryTypographyProps={{ fontSize: '0.75rem' }}
                     />
                   </ListItem>
@@ -727,18 +732,18 @@ export const DashboardPage: React.FC = () => {
           )}
 
           {/* Assigned Projects List */}
-          <Paper sx={{ p: 3, borderRadius: 3, border: '1px solid #E2E8F0' }}>
+          <Paper sx={{ p: 3, borderRadius: 3, border: `1px solid ${COLORS.neutral.borderLight}` }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-              <Typography variant="h6" fontWeight={700}>
-                My Projects ({myProjects.length})
+              <Typography variant="h6">
+                {t('projects.title')} ({myProjects.length})
               </Typography>
               <Button size="small" onClick={() => navigate('/projects')}>
-                View All
+                {t('navbar.view_all')}
               </Button>
             </Box>
             {myProjects.length === 0 ? (
               <Typography variant="body2" color="text.secondary" sx={{ py: 2, textAlign: 'center' }}>
-                You are not currently assigned to any active projects.
+                {t('empty_states.no_projects')}
               </Typography>
             ) : (
               <List disablePadding>
@@ -746,7 +751,7 @@ export const DashboardPage: React.FC = () => {
                   <ListItem
                     key={p._id}
                     disableGutters
-                    sx={{ py: 1.2, borderBottom: '1px solid #F1F5F9' }}
+                    sx={{ py: 1.2, borderBottom: `1px solid ${COLORS.neutral.bgMuted}` }}
                     secondaryAction={
                       <Chip
                         label={p.type}
@@ -763,7 +768,7 @@ export const DashboardPage: React.FC = () => {
                     <ListItemText
                       primary={p.name}
                       secondary={p.projectCode}
-                      primaryTypographyProps={{ fontWeight: 600, fontSize: '0.85rem' }}
+                      primaryTypographyProps={{ fontSize: '0.85rem' }}
                       secondaryTypographyProps={{ fontSize: '0.72rem' }}
                     />
                   </ListItem>

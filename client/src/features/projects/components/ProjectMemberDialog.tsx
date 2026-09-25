@@ -124,7 +124,7 @@ export const ProjectMemberDialog: React.FC<ProjectMemberDialogProps> = ({
           <PersonAddAlt1Icon fontSize="small" />
         </Avatar>
         <Box>
-          <Typography variant="h6" fontWeight={700}>
+          <Typography variant="h6">
             Assign Team Member
           </Typography>
           <Typography variant="caption" color="text.secondary">
@@ -180,7 +180,6 @@ export const ProjectMemberDialog: React.FC<ProjectMemberDialogProps> = ({
                                 width: 36,
                                 height: 36,
                                 fontSize: '0.85rem',
-                                fontWeight: 700,
                                 bgcolor: isAssigned ? 'grey.500' : 'primary.main',
                               }}
                             >
@@ -188,14 +187,14 @@ export const ProjectMemberDialog: React.FC<ProjectMemberDialogProps> = ({
                             </Avatar>
                             <Box sx={{ flexGrow: 1, minWidth: 0 }}>
                               <Stack direction="row" alignItems="center" spacing={1} flexWrap="wrap">
-                                <Typography variant="subtitle2" fontWeight={700} noWrap>
+                                <Typography variant="subtitle2" noWrap>
                                   {name}
                                 </Typography>
                                 <Chip
                                   size="small"
                                   variant="outlined"
                                   label={option.employeeCode}
-                                  sx={{ fontWeight: 600, fontSize: '0.7rem', height: 20 }}
+                                  sx={{ fontSize: '0.7rem', height: 20 }}
                                 />
                                 {option.level && (
                                   <Chip
@@ -266,7 +265,7 @@ export const ProjectMemberDialog: React.FC<ProjectMemberDialogProps> = ({
                       {(selectedEmp.firstName?.charAt(0) || 'U').toUpperCase()}
                     </Avatar>
                     <Box>
-                      <Typography variant="subtitle2" fontWeight={700}>
+                      <Typography variant="subtitle2">
                         {selectedEmp.fullName || `${selectedEmp.firstName || ''} ${selectedEmp.lastName || ''}`.trim()}
                       </Typography>
                       <Typography variant="caption" color="text.secondary">

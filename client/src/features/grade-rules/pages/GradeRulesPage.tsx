@@ -22,7 +22,6 @@ import {
   Button,
   Alert,
   Divider,
-  CircularProgress,
 } from '@mui/material';
 import CalculateOutlinedIcon from '@mui/icons-material/CalculateOutlined';
 import RuleOutlinedIcon from '@mui/icons-material/RuleOutlined';
@@ -32,6 +31,8 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { gradeRulesApi, SimulationResultDto } from '../api/gradeRulesApi';
 import { criteriaApi } from '../../criteria/api/criteriaApi';
+import { COLORS } from '../../../constants/colors';
+import { ShimmerTableRows, ShimmerCardsLoader } from '../../../components/common/ShimmerLoader';
 
 const GRADE_COLORS: Record<string, 'success' | 'primary' | 'secondary' | 'warning' | 'error' | 'default'> = {
   'A+': 'success',
@@ -131,7 +132,7 @@ export const GradeRulesPage: React.FC = () => {
   return (
     <Box sx={{ p: { xs: 2, md: 3 } }}>
       <Box sx={{ mb: 3 }}>
-        <Typography variant="h4" fontWeight={700} color="text.primary">
+        <Typography variant="h4" color="text.primary">
           Grade Rules & Calibration Engine
         </Typography>
         <Typography variant="body2" color="text.secondary">
@@ -139,7 +140,7 @@ export const GradeRulesPage: React.FC = () => {
         </Typography>
       </Box>
 
-      <Paper sx={{ mb: 3, borderRadius: 3, border: '1px solid #E2E8F0' }}>
+      <Paper sx={{ mb: 3, borderRadius: 3, border: `1px solid ${COLORS.neutral.borderLight}` }}>
         <Tabs value={tab} onChange={(_, v) => setTab(v)} sx={{ borderBottom: 1, borderColor: 'divider', px: 2 }}>
           <Tab icon={<RuleOutlinedIcon />} iconPosition="start" label="Configured Grade Rules" />
           <Tab icon={<CalculateOutlinedIcon />} iconPosition="start" label="Interactive Grade Simulator" />
@@ -150,38 +151,34 @@ export const GradeRulesPage: React.FC = () => {
           <Box sx={{ p: 3 }}>
             <TableContainer>
               <Table>
-                <TableHead sx={{ backgroundColor: '#F8FAFC' }}>
+                <TableHead sx={{ backgroundColor: COLORS.neutral.bgHover }}>
                   <TableRow>
-                    <TableCell sx={{ fontWeight: 700, width: 90 }}>Priority</TableCell>
-                    <TableCell sx={{ fontWeight: 700, width: 100 }}>Grade</TableCell>
-                    <TableCell sx={{ fontWeight: 700, width: 150 }}>Score Range</TableCell>
-                    <TableCell sx={{ fontWeight: 700 }}>Condition Requirements</TableCell>
-                    <TableCell sx={{ fontWeight: 700, width: 140 }}>HR Approval</TableCell>
+                    <TableCell sx={{ width: 90 }}>Priority</TableCell>
+                    <TableCell sx={{ width: 100 }}>Grade</TableCell>
+                    <TableCell sx={{ width: 150 }}>Score Range</TableCell>
+                    <TableCell>Condition Requirements</TableCell>
+                    <TableCell sx={{ width: 140 }}>HR Approval</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {loadingRules ? (
-                    <TableRow>
-                      <TableCell colSpan={5} align="center" sx={{ py: 5 }}>
-                        <CircularProgress size={32} />
-                      </TableCell>
-                    </TableRow>
+                    <ShimmerTableRows rows={6} columns={5} hasAvatar={false} />
                   ) : (
                     rules.map((r, i) => (
                       <TableRow key={r._id || i} hover>
-                        <TableCell sx={{ fontWeight: 600 }}>#{r.priority}</TableCell>
+                        <TableCell>#{r.priority}</TableCell>
                         <TableCell>
                           <Chip
                             label={r.grade}
                             color={GRADE_COLORS[r.grade] || 'default'}
-                            sx={{ fontWeight: 800, fontSize: '0.95rem', minWidth: 50 }}
+                            sx={{ fontSize: '0.95rem', minWidth: 50 }}
                           />
                         </TableCell>
-                        <TableCell sx={{ fontWeight: 600 }}>
+                        <TableCell>
                           {r.minScore} - {r.maxScore}%
                         </TableCell>
                         <TableCell>
-                          <Typography variant="body2" color="text.primary" fontWeight={500}>
+                          <Typography variant="body2" color="text.primary">
                             {r.description}
                           </Typography>
                           {r.conditions && r.conditions.length > 0 && (
@@ -192,7 +189,7 @@ export const GradeRulesPage: React.FC = () => {
                                   label={`${cond.field} ${cond.operator} ${cond.value}`}
                                   size="small"
                                   variant="outlined"
-                                  sx={{ fontSize: '0.75rem', backgroundColor: '#F8FAFC' }}
+                                  sx={{ fontSize: '0.75rem', backgroundColor: COLORS.neutral.bgHover }}
                                 />
                               ))}
                             </Box>
@@ -219,7 +216,7 @@ export const GradeRulesPage: React.FC = () => {
           <Box sx={{ p: 3 }}>
             <Grid container spacing={3}>
               <Grid item xs={12} lg={7}>
-                <Typography variant="h6" fontWeight={700} sx={{ mb: 2 }}>
+                <Typography variant="h6" sx={{ mb: 2 }}>
                   1. Input Assessment Scores (1-5 Scale)
                 </Typography>
 
@@ -245,21 +242,21 @@ export const GradeRulesPage: React.FC = () => {
                 </Box>
 
                 {loadingCriteria ? (
-                  <CircularProgress />
+                  <ShimmerCardsLoader count={3} />
                 ) : (
                   criteria.map((c) => (
-                    <Card key={c._id} sx={{ mb: 2, border: '1px solid #E2E8F0', boxShadow: 'none' }}>
+                    <Card key={c._id} sx={{ mb: 2, border: `1px solid ${COLORS.neutral.borderLight}`, boxShadow: 'none' }}>
                       <CardHeader
                         title={c.name}
-                        titleTypographyProps={{ variant: 'subtitle2', fontWeight: 700 }}
+                        titleTypographyProps={{ variant: 'subtitle2'}}
                         subheader={`Weight: ${c.weight}%`}
-                        sx={{ py: 1.5, px: 2, backgroundColor: '#F8FAFC' }}
+                        sx={{ py: 1.5, px: 2, backgroundColor: COLORS.neutral.bgHover }}
                       />
                       <CardContent sx={{ py: 1.5, px: 2 }}>
                         <Grid container spacing={2}>
                           {selfSubmitted && (
                             <Grid item xs={12} sm={4}>
-                              <Typography variant="caption" color="text.secondary" fontWeight={600}>
+                              <Typography variant="caption" color="text.secondary">
                                 Self Rating: {ratingsState[c._id]?.self || 4} / 5
                               </Typography>
                               <Slider
@@ -275,7 +272,7 @@ export const GradeRulesPage: React.FC = () => {
                             </Grid>
                           )}
                           <Grid item xs={12} sm={selfSubmitted ? 4 : 6}>
-                            <Typography variant="caption" color="primary.main" fontWeight={700}>
+                            <Typography variant="caption" color="primary.main">
                               Senior Rating: {ratingsState[c._id]?.senior || 4} / 5
                             </Typography>
                             <Slider
@@ -291,7 +288,7 @@ export const GradeRulesPage: React.FC = () => {
                             />
                           </Grid>
                           <Grid item xs={12} sm={selfSubmitted ? 4 : 6}>
-                            <Typography variant="caption" color="secondary.main" fontWeight={700}>
+                            <Typography variant="caption" color="secondary.main">
                               PM Rating: {ratingsState[c._id]?.pm || 4} / 5
                             </Typography>
                             <Slider
@@ -313,7 +310,7 @@ export const GradeRulesPage: React.FC = () => {
                 )}
 
                 <Box sx={{ mt: 2, mb: 3 }}>
-                  <Typography variant="subtitle2" fontWeight={600} gutterBottom>
+                  <Typography variant="subtitle2" gutterBottom>
                     Missed Deadlines Count: {missedDeadlines}
                   </Typography>
                   <Slider
@@ -341,14 +338,14 @@ export const GradeRulesPage: React.FC = () => {
 
               {/* Simulation Result Card */}
               <Grid item xs={12} lg={5}>
-                <Typography variant="h6" fontWeight={700} sx={{ mb: 2 }}>
+                <Typography variant="h6" sx={{ mb: 2 }}>
                   2. Engine Evaluation & Output
                 </Typography>
 
                 {simulationResult ? (
-                  <Card sx={{ border: '2px solid #E2E8F0', borderRadius: 3, p: 2 }}>
+                  <Card sx={{ border: `2px solid ${COLORS.neutral.borderLight}`, borderRadius: 3, p: 2 }}>
                     <Box sx={{ textAlign: 'center', py: 2 }}>
-                      <Typography variant="overline" color="text.secondary" fontWeight={700}>
+                      <Typography variant="overline" color="text.secondary">
                         Calculated Grade
                       </Typography>
                       <Box sx={{ display: 'flex', justifyContent: 'center', my: 1 }}>
@@ -359,12 +356,11 @@ export const GradeRulesPage: React.FC = () => {
                             fontSize: '2rem',
                             height: 64,
                             minWidth: 90,
-                            fontWeight: 900,
                             borderRadius: 3,
                           }}
                         />
                       </Box>
-                      <Typography variant="h5" fontWeight={700} color="text.primary">
+                      <Typography variant="h5" color="text.primary">
                         Score: {simulationResult.finalScore.toFixed(2)}%
                       </Typography>
                       <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
@@ -374,10 +370,10 @@ export const GradeRulesPage: React.FC = () => {
 
                     <Divider sx={{ my: 2 }} />
 
-                    <Typography variant="subtitle2" fontWeight={700} gutterBottom>
+                    <Typography variant="subtitle2" gutterBottom>
                       Reviewer Contributions:
                     </Typography>
-                    <Box sx={{ backgroundColor: '#F8FAFC', p: 1.5, borderRadius: 2, mb: 2 }}>
+                    <Box sx={{ backgroundColor: COLORS.neutral.bgHover, p: 1.5, borderRadius: 2, mb: 2 }}>
                       {simulationResult.evaluationContext.selfScorePct !== undefined && (
                         <Typography variant="body2">
                           • Self (10%):{' '}
@@ -396,7 +392,7 @@ export const GradeRulesPage: React.FC = () => {
                       )}
                     </Box>
 
-                    <Typography variant="subtitle2" fontWeight={700} gutterBottom>
+                    <Typography variant="subtitle2" gutterBottom>
                       Calibration & Anomaly Flags:
                     </Typography>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
@@ -434,8 +430,8 @@ export const GradeRulesPage: React.FC = () => {
                       p: 4,
                       textAlign: 'center',
                       borderRadius: 3,
-                      border: '1px dashed #CBD5E1',
-                      backgroundColor: '#F8FAFC',
+                      border: `1px dashed ${COLORS.neutral.border}`,
+                      backgroundColor: COLORS.neutral.bgHover,
                     }}
                   >
                     <CalculateOutlinedIcon sx={{ fontSize: 48, color: 'text.secondary', mb: 1 }} />

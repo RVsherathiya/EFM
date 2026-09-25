@@ -53,7 +53,7 @@ export const TaskRejectDialog: React.FC<TaskRejectDialogProps> = ({
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle sx={{ fontWeight: 700, color: 'error.main' }}>
+      <DialogTitle sx={{ color: 'error.main' }}>
         Reject {count} Task{count > 1 ? 's' : ''}
       </DialogTitle>
       <DialogContent dividers>

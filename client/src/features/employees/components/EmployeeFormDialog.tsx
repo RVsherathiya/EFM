@@ -113,7 +113,7 @@ export const EmployeeFormDialog: React.FC<EmployeeFormDialogProps> = ({
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle fontWeight={700}>
+      <DialogTitle>
         {isEdit ? `Edit Employee (${initialData?.employeeCode})` : 'Create New Employee'}
       </DialogTitle>
       <Box component="form" onSubmit={handleSubmit(handleFormSubmit)}>

@@ -137,7 +137,7 @@ export const TaskFormDialog: React.FC<TaskFormDialogProps> = ({
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle sx={{ fontWeight: 700 }}>
+      <DialogTitle>
         {initialData ? 'Edit Task' : 'Log New Task'}
       </DialogTitle>
       <DialogContent dividers>

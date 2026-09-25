@@ -11,7 +11,6 @@ import {
   TableRow,
   Chip,
   Button,
-  CircularProgress,
   Avatar,
 } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
@@ -19,6 +18,8 @@ import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { reviewsApi } from '../api/reviewsApi';
+import { COLORS } from '../../../constants/colors';
+import { ShimmerTableRows } from '../../../components/common/ShimmerLoader';
 
 const STATUS_COLORS: Record<string, 'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning'> = {
   DRAFT: 'default',
@@ -47,7 +48,7 @@ export const TeamReviewsPage: React.FC = () => {
   return (
     <Box sx={{ p: { xs: 2, md: 3 } }}>
       <Box sx={{ mb: 3 }}>
-        <Typography variant="h4" fontWeight={700} color="text.primary">
+        <Typography variant="h4" color="text.primary">
           Team Appraisal Queue
         </Typography>
         <Typography variant="body2" color="text.secondary">
@@ -55,28 +56,24 @@ export const TeamReviewsPage: React.FC = () => {
         </Typography>
       </Box>
 
-      <Paper sx={{ borderRadius: 3, border: '1px solid #E2E8F0', overflow: 'hidden' }}>
+      <Paper sx={{ borderRadius: 3, border: `1px solid ${COLORS.neutral.borderLight}`, overflow: 'hidden' }}>
         <TableContainer>
           <Table>
-            <TableHead sx={{ backgroundColor: '#F8FAFC' }}>
+            <TableHead sx={{ backgroundColor: COLORS.neutral.bgHover }}>
               <TableRow>
-                <TableCell sx={{ fontWeight: 700 }}>Employee</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Cycle Period</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Status</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Self Submitted</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Send Backs</TableCell>
-                <TableCell sx={{ fontWeight: 700 }} align="right">
+                <TableCell>Employee</TableCell>
+                <TableCell>Cycle Period</TableCell>
+                <TableCell>Status</TableCell>
+                <TableCell>Self Submitted</TableCell>
+                <TableCell>Send Backs</TableCell>
+                <TableCell align="right">
                   Action
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {isLoading ? (
-                <TableRow>
-                  <TableCell colSpan={6} align="center" sx={{ py: 6 }}>
-                    <CircularProgress size={36} />
-                  </TableCell>
-                </TableRow>
+                <ShimmerTableRows rows={5} columns={6} />
               ) : reviews.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} align="center" sx={{ py: 6 }}>
@@ -95,7 +92,7 @@ export const TeamReviewsPage: React.FC = () => {
                           {rev.employeeId?.firstName?.[0] || 'E'}
                         </Avatar>
                         <Box>
-                          <Typography variant="subtitle2" fontWeight={700}>
+                          <Typography variant="subtitle2">
                             {rev.employeeId?.firstName} {rev.employeeId?.lastName}
                           </Typography>
                           <Typography variant="caption" color="text.secondary">
@@ -105,7 +102,7 @@ export const TeamReviewsPage: React.FC = () => {
                       </Box>
                     </TableCell>
                     <TableCell>
-                      <Typography variant="subtitle2" fontWeight={600}>
+                      <Typography variant="subtitle2">
                         {rev.cycleId?.name}
                       </Typography>
                       <Typography variant="caption" color="text.secondary">
@@ -117,7 +114,6 @@ export const TeamReviewsPage: React.FC = () => {
                         label={rev.status.replace('_', ' ')}
                         color={STATUS_COLORS[rev.status] || 'default'}
                         size="small"
-                        sx={{ fontWeight: 600 }}
                       />
                     </TableCell>
                     <TableCell>

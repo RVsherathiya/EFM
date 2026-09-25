@@ -18,7 +18,6 @@ import {
   DialogActions,
   TextField,
   MenuItem,
-  CircularProgress,
   Tooltip,
   Alert,
 } from '@mui/material';
@@ -28,7 +27,9 @@ import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { reviewsApi, ReviewDto } from '../api/reviewsApi';
+import { COLORS } from '../../../constants/colors';
 import { cyclesApi } from '../../cycles/api/cyclesApi';
+import { ShimmerTableRows } from '../../../components/common/ShimmerLoader';
 
 const GRADES = ['A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-'];
 
@@ -105,7 +106,7 @@ export const CalibrationPage: React.FC = () => {
     <Box sx={{ p: { xs: 2, md: 3 } }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, flexWrap: 'wrap', gap: 2 }}>
         <Box>
-          <Typography variant="h4" fontWeight={700} color="text.primary">
+          <Typography variant="h4" color="text.primary">
             Appraisal Calibration & HR Overrides
           </Typography>
           <Typography variant="body2" color="text.secondary">
@@ -132,29 +133,25 @@ export const CalibrationPage: React.FC = () => {
       </Box>
 
       {/* Reviews Table */}
-      <Paper sx={{ borderRadius: 3, border: '1px solid #E2E8F0', overflow: 'hidden' }}>
+      <Paper sx={{ borderRadius: 3, border: `1px solid ${COLORS.neutral.borderLight}`, overflow: 'hidden' }}>
         <TableContainer>
           <Table>
-            <TableHead sx={{ backgroundColor: '#F8FAFC' }}>
+            <TableHead sx={{ backgroundColor: COLORS.neutral.bgHover }}>
               <TableRow>
-                <TableCell sx={{ fontWeight: 700 }}>Employee</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Cycle</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Final Score</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Grade</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Status</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>HR Approval Flag</TableCell>
-                <TableCell sx={{ fontWeight: 700 }} align="right">
+                <TableCell>Employee</TableCell>
+                <TableCell>Cycle</TableCell>
+                <TableCell>Final Score</TableCell>
+                <TableCell>Grade</TableCell>
+                <TableCell>Status</TableCell>
+                <TableCell>HR Approval Flag</TableCell>
+                <TableCell align="right">
                   Actions
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {isLoading ? (
-                <TableRow>
-                  <TableCell colSpan={7} align="center" sx={{ py: 6 }}>
-                    <CircularProgress size={36} />
-                  </TableCell>
-                </TableRow>
+                <ShimmerTableRows rows={6} columns={7} />
               ) : reviews.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={7} align="center" sx={{ py: 6 }}>
@@ -170,7 +167,7 @@ export const CalibrationPage: React.FC = () => {
                   return (
                     <TableRow key={rev._id} hover>
                       <TableCell>
-                        <Typography variant="subtitle2" fontWeight={700}>
+                        <Typography variant="subtitle2">
                           {rev.employeeId?.firstName} {rev.employeeId?.lastName}
                         </Typography>
                         <Typography variant="caption" color="text.secondary">
@@ -181,7 +178,7 @@ export const CalibrationPage: React.FC = () => {
                         <Typography variant="body2">{rev.cycleId?.name}</Typography>
                       </TableCell>
                       <TableCell>
-                        <Typography variant="subtitle2" fontWeight={700}>
+                        <Typography variant="subtitle2">
                           {rev.finalScore !== undefined ? `${rev.finalScore.toFixed(2)}%` : '—'}
                         </Typography>
                       </TableCell>
@@ -195,7 +192,7 @@ export const CalibrationPage: React.FC = () => {
                               ? 'error'
                               : 'primary'
                           }
-                          sx={{ fontWeight: 800, minWidth: 44 }}
+                          sx={{ minWidth: 44 }}
                         />
                       </TableCell>
                       <TableCell>
@@ -245,7 +242,7 @@ export const CalibrationPage: React.FC = () => {
 
       {/* Override Dialog */}
       <Dialog open={overrideModalOpen} onClose={handleCloseOverride} maxWidth="sm" fullWidth>
-        <DialogTitle sx={{ fontWeight: 700 }}>HR Grade Calibration Override</DialogTitle>
+        <DialogTitle>HR Grade Calibration Override</DialogTitle>
         <DialogContent dividers>
           {overrideError && (
             <Alert severity="error" sx={{ mb: 2 }}>

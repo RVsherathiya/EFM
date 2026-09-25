@@ -124,7 +124,7 @@ export const ProjectFormDialog: React.FC<ProjectFormDialogProps> = ({
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle fontWeight={700}>
+      <DialogTitle>
         {isEdit ? `Edit Project (${initialData?.projectCode})` : 'Create New Project'}
       </DialogTitle>
       <Box component="form" onSubmit={handleSubmit(handleFormSubmit)}>

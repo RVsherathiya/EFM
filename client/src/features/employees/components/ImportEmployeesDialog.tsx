@@ -100,7 +100,7 @@ export const ImportEmployeesDialog: React.FC<ImportEmployeesDialogProps> = ({
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle fontWeight={700}>Import Employees via CSV</DialogTitle>
+      <DialogTitle>Import Employees via CSV</DialogTitle>
       <DialogContent dividers>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Typography variant="body2" color="text.secondary">
@@ -161,7 +161,7 @@ export const ImportEmployeesDialog: React.FC<ImportEmployeesDialogProps> = ({
 
               {previewResult.errors && previewResult.errors.length > 0 && (
                 <Alert severity="error" sx={{ mb: 2 }}>
-                  <Typography variant="subtitle2" fontWeight={600} gutterBottom>
+                  <Typography variant="subtitle2" gutterBottom>
                     Validation Issues Found:
                   </Typography>
                   <ul style={{ margin: 0, paddingLeft: 20 }}>
@@ -189,7 +189,7 @@ export const ImportEmployeesDialog: React.FC<ImportEmployeesDialogProps> = ({
                     <TableBody>
                       {previewResult.preview.map((row, idx) => (
                         <TableRow key={idx}>
-                          <TableCell sx={{ fontWeight: 600 }}>{String(row.employeeCode)}</TableCell>
+                          <TableCell>{String(row.employeeCode)}</TableCell>
                           <TableCell>{`${row.firstName} ${row.lastName}`}</TableCell>
                           <TableCell>{String(row.email)}</TableCell>
                           <TableCell>{String(row.designation)}</TableCell>

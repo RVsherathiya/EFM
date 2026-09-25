@@ -25,8 +25,9 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { tasksApi, TaskDto } from '../api/tasksApi';
 import { projectsApi, Project } from '../../projects/api/projectsApi';
 import { PageHeader } from '../../../components/common/PageHeader';
-import { LoadingSpinner } from '../../../components/common/LoadingSpinner';
+import { ShimmerTableLoader } from '../../../components/common/ShimmerLoader';
 import { TaskFormDialog } from '../components/TaskFormDialog';
+import { COLORS } from '../../../constants/colors';
 
 export const WeeklyTimesheetPage: React.FC = () => {
   const queryClient = useQueryClient();
@@ -162,11 +163,11 @@ export const WeeklyTimesheetPage: React.FC = () => {
             Previous Week
           </Button>
           <Box sx={{ textAlign: 'center' }}>
-            <Typography variant="h6" sx={{ fontWeight: 700 }}>
+            <Typography variant="h6">
               {days[0].toLocaleDateString(undefined, { month: 'long', day: 'numeric' })} – {days[6].toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Total Logged: <strong style={{ color: totalWeeklyHours > 40 ? '#2e7d32' : 'inherit' }}>{totalWeeklyHours} hrs</strong>
+              Total Logged: <strong style={{ color: totalWeeklyHours > 40 ? COLORS.feedback.successDark : 'inherit' }}>{totalWeeklyHours} hrs</strong>
             </Typography>
           </Box>
           <Button endIcon={<NextIcon />} onClick={handleNextWeek} size="small">
@@ -177,24 +178,24 @@ export const WeeklyTimesheetPage: React.FC = () => {
 
       {/* Timesheet Table */}
       {isLoading ? (
-        <LoadingSpinner message="Loading weekly timesheet..." />
+        <ShimmerTableLoader rows={6} columns={10} />
       ) : (
         <Card>
           <TableContainer component={Paper} elevation={0}>
             <Table>
               <TableHead sx={{ bgcolor: 'background.default' }}>
                 <TableRow>
-                  <TableCell sx={{ fontWeight: 700 }}>Project & Category</TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>Task Title</TableCell>
+                  <TableCell>Project & Category</TableCell>
+                  <TableCell>Task Title</TableCell>
                   {days.map((d, i) => (
-                    <TableCell key={i} align="center" sx={{ fontWeight: 700, minWidth: 90 }}>
+                    <TableCell key={i} align="center" sx={{ minWidth: 90 }}>
                       {d.toLocaleDateString(undefined, { weekday: 'short' })}
                       <Typography variant="caption" sx={{ display: 'block', color: 'text.secondary' }}>
                         {d.toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' })}
                       </Typography>
                     </TableCell>
                   ))}
-                  <TableCell align="right" sx={{ fontWeight: 700 }}>Total</TableCell>
+                  <TableCell align="right" >Total</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -214,7 +215,7 @@ export const WeeklyTimesheetPage: React.FC = () => {
                     return (
                       <TableRow key={t._id} hover>
                         <TableCell>
-                          <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                          <Typography variant="body2">
                             {projectObj?.name || 'Project'}
                           </Typography>
                           <Typography variant="caption" color="text.secondary">
@@ -235,7 +236,7 @@ export const WeeklyTimesheetPage: React.FC = () => {
                           return (
                             <TableCell key={i} align="center" sx={{ bgcolor: isThisDay ? 'action.hover' : 'inherit' }}>
                               {isThisDay ? (
-                                <Typography variant="body2" sx={{ fontWeight: 700, color: 'primary.main' }}>
+                                <Typography variant="body2" sx={{ color: 'primary.main' }}>
                                   {t.hours}h
                                 </Typography>
                               ) : (
@@ -244,7 +245,7 @@ export const WeeklyTimesheetPage: React.FC = () => {
                             </TableCell>
                           );
                         })}
-                        <TableCell align="right" sx={{ fontWeight: 700 }}>
+                        <TableCell align="right" >
                           {t.hours}h
                         </TableCell>
                       </TableRow>
@@ -253,16 +254,16 @@ export const WeeklyTimesheetPage: React.FC = () => {
                 )}
 
                 {/* Day Summary Row */}
-                <TableRow sx={{ bgcolor: 'action.selected', fontWeight: 700 }}>
-                  <TableCell colSpan={2} sx={{ fontWeight: 700 }}>
+                <TableRow sx={{ bgcolor: 'action.selected' }}>
+                  <TableCell colSpan={2}>
                     Daily Total Hours
                   </TableCell>
                   {dayTotals.map((tot, i) => (
-                    <TableCell key={i} align="center" sx={{ fontWeight: 700 }}>
+                    <TableCell key={i} align="center">
                       <Typography
                         variant="body2"
                         sx={{
-                          fontWeight: 700,
+
                           color: tot > 12 ? 'warning.main' : tot > 0 ? 'text.primary' : 'text.disabled',
                         }}
                       >
@@ -270,7 +271,7 @@ export const WeeklyTimesheetPage: React.FC = () => {
                       </Typography>
                     </TableCell>
                   ))}
-                  <TableCell align="right" sx={{ fontWeight: 700, color: 'primary.main' }}>
+                  <TableCell align="right" sx={{ color: 'primary.main' }}>
                     {totalWeeklyHours}h
                   </TableCell>
                 </TableRow>

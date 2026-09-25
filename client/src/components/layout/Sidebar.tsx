@@ -9,6 +9,7 @@ import {
   ListSubheader,
   Box,
   Divider,
+  Typography,
   useTheme,
   useMediaQuery,
 } from '@mui/material';
@@ -26,6 +27,9 @@ import HistoryOutlinedIcon from '@mui/icons-material/HistoryOutlined';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import LockClockOutlinedIcon from '@mui/icons-material/LockClockOutlined';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { Logo } from '../brand/Logo';
+import { COLORS } from '../../constants/colors';
 
 interface SidebarProps {
   mobileOpen: boolean;
@@ -36,6 +40,7 @@ interface SidebarProps {
 const DRAWER_WIDTH = 260;
 
 export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onDrawerToggle, userRoles = ['EMPLOYEE'] }) => {
+  const { t } = useTranslation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const location = useLocation();
@@ -48,51 +53,51 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onDrawerToggle, us
 
   const navItems = [
     {
-      group: 'General',
+      group: t('nav.general'),
       items: [
-        { label: 'Dashboard', path: '/dashboard', icon: <DashboardOutlinedIcon /> },
-        { label: 'My Tasks', path: '/tasks', icon: <AssignmentOutlinedIcon /> },
-        { label: 'Weekly Timesheet', path: '/tasks/timesheet', icon: <CalendarMonthOutlinedIcon /> },
-        { label: 'My Reviews', path: '/reviews', icon: <RateReviewOutlinedIcon /> },
-        { label: 'My Projects', path: '/projects', icon: <FolderOutlinedIcon /> },
+        { label: t('nav.dashboard'), path: '/dashboard', icon: <DashboardOutlinedIcon /> },
+        { label: t('nav.my_tasks'), path: '/tasks', icon: <AssignmentOutlinedIcon /> },
+        { label: t('nav.weekly_timesheet'), path: '/tasks/timesheet', icon: <CalendarMonthOutlinedIcon /> },
+        { label: t('nav.my_reviews'), path: '/reviews', icon: <RateReviewOutlinedIcon /> },
+        { label: t('nav.my_projects'), path: '/projects', icon: <FolderOutlinedIcon /> },
       ],
     },
     ...(isSenior || isPM
       ? [
-          {
-            group: 'Management & Approvals',
-            items: [
-              { label: 'Task Approvals', path: '/tasks/approvals', icon: <HowToRegOutlinedIcon /> },
-              { label: 'Team Reviews', path: '/reviews/team', icon: <RateReviewOutlinedIcon /> },
-              ...(isSenior ? [{ label: 'My Team', path: '/team', icon: <PeopleOutlinedIcon /> }] : []),
-            ],
-          },
-        ]
+        {
+          group: t('nav.management_approvals'),
+          items: [
+            { label: t('nav.task_approvals'), path: '/tasks/approvals', icon: <HowToRegOutlinedIcon /> },
+            { label: t('nav.team_reviews'), path: '/reviews/team', icon: <RateReviewOutlinedIcon /> },
+            ...(isSenior ? [{ label: t('nav.my_team'), path: '/team', icon: <PeopleOutlinedIcon /> }] : []),
+          ],
+        },
+      ]
       : []),
     ...(isHR
       ? [
-          {
-            group: 'HR Administration',
-            items: [
-              { label: 'Employees', path: '/employees', icon: <PeopleOutlinedIcon /> },
-              { label: 'Review Cycles', path: '/cycles', icon: <CalendarMonthOutlinedIcon /> },
-              { label: 'Criteria Library', path: '/criteria', icon: <RuleOutlinedIcon /> },
-              { label: 'Grade Rules & Simulator', path: '/grade-rules', icon: <VerifiedUserOutlinedIcon /> },
-              { label: 'Calibration & Overrides', path: '/reviews/calibration', icon: <HowToRegOutlinedIcon /> },
-              { label: 'Period Locks', path: '/period-locks', icon: <LockClockOutlinedIcon /> },
-            ],
-          },
-        ]
+        {
+          group: t('nav.hr_administration'),
+          items: [
+            { label: t('nav.employees'), path: '/employees', icon: <PeopleOutlinedIcon /> },
+            { label: t('nav.review_cycles'), path: '/cycles', icon: <CalendarMonthOutlinedIcon /> },
+            { label: t('nav.criteria_library'), path: '/criteria', icon: <RuleOutlinedIcon /> },
+            { label: t('nav.grade_rules'), path: '/grade-rules', icon: <VerifiedUserOutlinedIcon /> },
+            { label: t('nav.calibration'), path: '/reviews/calibration', icon: <HowToRegOutlinedIcon /> },
+            { label: t('nav.period_locks'), path: '/period-locks', icon: <LockClockOutlinedIcon /> },
+          ],
+        },
+      ]
       : []),
     {
-      group: 'Analytics & Audits',
+      group: t('nav.analytics_audits'),
       items: [
-        { label: 'Reports', path: '/reports', icon: <AssessmentOutlinedIcon /> },
+        { label: t('nav.reports'), path: '/reports', icon: <AssessmentOutlinedIcon /> },
         ...(isHR || isSuperAdmin
-          ? [{ label: 'Audit Logs', path: '/audit-logs', icon: <HistoryOutlinedIcon /> }]
+          ? [{ label: t('nav.audit_logs'), path: '/audit-logs', icon: <HistoryOutlinedIcon /> }]
           : []),
         ...(isSuperAdmin
-          ? [{ label: 'System Settings', path: '/settings', icon: <SettingsOutlinedIcon /> }]
+          ? [{ label: t('nav.system_settings'), path: '/settings', icon: <SettingsOutlinedIcon /> }]
           : []),
       ],
     },
@@ -107,6 +112,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onDrawerToggle, us
 
   const drawerContent = (
     <Box sx={{ overflowY: 'auto', height: '100%', py: 2 }}>
+      {isMobile && (
+        <Box sx={{ px: 3, pb: 2, mb: 1, borderBottom: `1px solid ${COLORS.neutral.borderLight}` }}>
+          <Logo size="sm" onClick={() => handleNav('/dashboard')} />
+        </Box>
+      )}
       {navItems.map((section, idx) => (
         <React.Fragment key={idx}>
           <List
@@ -116,7 +126,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onDrawerToggle, us
                 sx={{
                   backgroundColor: 'transparent',
                   color: 'text.secondary',
-                  fontWeight: 700,
                   fontSize: '0.75rem',
                   textTransform: 'uppercase',
                   letterSpacing: '0.05em',
@@ -140,16 +149,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onDrawerToggle, us
                       borderRadius: 2,
                       px: 2,
                       py: 1,
-                      color: active ? 'primary.main' : 'text.primary',
-                      backgroundColor: active ? 'rgba(37, 99, 235, 0.08)' : 'transparent',
+                      color: active ? COLORS.primary.main : 'text.primary',
+                      backgroundColor: active ? COLORS.primary.subtleBg : 'transparent',
+                      borderLeft: active ? `3px solid ${COLORS.primary.main}` : '3px solid transparent',
                       '&:hover': {
-                        backgroundColor: active ? 'rgba(37, 99, 235, 0.12)' : 'rgba(0, 0, 0, 0.03)',
+                        backgroundColor: active ? COLORS.primary.subtleHover : 'rgba(24, 113, 247, 0.04)',
                       },
                     }}
                   >
                     <ListItemIcon
                       sx={{
-                        color: active ? 'primary.main' : 'text.secondary',
+                        color: active ? COLORS.primary.main : 'text.secondary',
                         minWidth: 36,
                       }}
                     >
@@ -158,7 +168,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onDrawerToggle, us
                     <ListItemText
                       primary={item.label}
                       primaryTypographyProps={{
-                        fontWeight: active ? 600 : 500,
                         fontSize: '0.875rem',
                       }}
                     />
@@ -167,9 +176,24 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onDrawerToggle, us
               );
             })}
           </List>
-          {idx < navItems.length - 1 && <Divider sx={{ my: 1.5, mx: 2, borderColor: '#F1F5F9' }} />}
+          {idx < navItems.length - 1 && <Divider sx={{ my: 1.5, mx: 2, borderColor: COLORS.neutral.bgMuted }} />}
         </React.Fragment>
       ))}
+
+      {/* Modern Version Footer */}
+      <Box sx={{ mt: 'auto', p: 2, mx: 1.5, mb: 1, borderRadius: 2.5, bgcolor: 'rgba(24, 113, 247, 0.05)', border: `1px solid ${COLORS.primary.borderSubtle}` }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Typography variant="caption" sx={{ color: COLORS.primary.main, fontSize: '0.78rem' }}>
+            Excellent Web World
+          </Typography>
+          <Box sx={{ px: 1, py: 0.25, borderRadius: 1, bgcolor: COLORS.primary.main, color: COLORS.neutral.textWhite, fontSize: '0.65rem' }}>
+            v3.0.0
+          </Box>
+        </Box>
+        <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '0.7rem', display: 'block', mt: 0.5 }}>
+          Enterprise Appraisal Suite
+        </Typography>
+      </Box>
     </Box>
   );
 
@@ -186,8 +210,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onDrawerToggle, us
           '& .MuiDrawer-paper': {
             boxSizing: 'border-box',
             width: DRAWER_WIDTH,
-            backgroundColor: '#FFFFFF',
-            borderRight: '1px solid #E2E8F0',
+            backgroundColor: COLORS.neutral.bgWhite,
+            borderRight: `1px solid ${COLORS.neutral.borderLight}`,
           },
         }}
       >
@@ -202,8 +226,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onDrawerToggle, us
           '& .MuiDrawer-paper': {
             boxSizing: 'border-box',
             width: DRAWER_WIDTH,
-            backgroundColor: '#FFFFFF',
-            borderRight: '1px solid #E2E8F0',
+            backgroundColor: COLORS.neutral.bgWhite,
+            borderRight: `1px solid ${COLORS.neutral.borderLight}`,
             top: 64,
             height: 'calc(100vh - 64px)',
           },

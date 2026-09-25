@@ -74,7 +74,6 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, label, size = 
       variant={variant}
       size={size}
       sx={{
-        fontWeight: 600,
         fontSize: size === 'small' ? '0.75rem' : '0.85rem',
         textTransform: 'capitalize',
       }}

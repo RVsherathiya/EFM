@@ -33,7 +33,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
             const isLast = idx === breadcrumbs.length - 1;
             if (isLast || !crumb.to) {
               return (
-                <Typography key={idx} variant="body2" color="text.secondary" fontWeight={isLast ? 600 : 400}>
+                <Typography key={idx} variant="body2" color="text.secondary">
                   {crumb.label}
                 </Typography>
               );
@@ -64,7 +64,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
         }}
       >
         <Box>
-          <Typography variant="h4" component="h1" fontWeight={700} color="text.primary">
+          <Typography variant="h4" component="h1" color="text.primary">
             {title}
           </Typography>
           {subtitle && (

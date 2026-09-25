@@ -67,7 +67,7 @@ export const ManagerReassignDialog: React.FC<ManagerReassignDialogProps> = ({
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle fontWeight={700}>
+      <DialogTitle>
         Reassign Reporting Manager ({employee?.fullName})
       </DialogTitle>
       <DialogContent dividers>

@@ -19,7 +19,6 @@ import {
   TextField,
   Grid,
   Alert,
-  CircularProgress,
   Tooltip,
   LinearProgress,
 } from '@mui/material';
@@ -30,6 +29,8 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { criteriaApi, CriterionDto } from '../api/criteriaApi';
+import { COLORS } from '../../../constants/colors';
+import { ShimmerTableRows } from '../../../components/common/ShimmerLoader';
 
 export const CriteriaPage: React.FC = () => {
   const queryClient = useQueryClient();
@@ -140,7 +141,7 @@ export const CriteriaPage: React.FC = () => {
     <Box sx={{ p: { xs: 2, md: 3 } }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Box>
-          <Typography variant="h4" fontWeight={700} color="text.primary">
+          <Typography variant="h4" color="text.primary">
             Review Criteria Library
           </Typography>
           <Typography variant="body2" color="text.secondary">
@@ -158,7 +159,7 @@ export const CriteriaPage: React.FC = () => {
       </Box>
 
       {/* Weight Summary Card */}
-      <Paper sx={{ p: 3, mb: 3, borderRadius: 3, border: '1px solid #E2E8F0' }}>
+      <Paper sx={{ p: 3, mb: 3, borderRadius: 3, border: `1px solid ${COLORS.neutral.borderLight}` }}>
         <Grid container spacing={3} alignItems="center">
           <Grid item xs={12} md={4}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
@@ -168,7 +169,7 @@ export const CriteriaPage: React.FC = () => {
                 <WarningAmberIcon sx={{ color: 'warning.main', fontSize: 32 }} />
               )}
               <Box>
-                <Typography variant="h5" fontWeight={700}>
+                <Typography variant="h5">
                   {totalWeight}%
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
@@ -194,27 +195,23 @@ export const CriteriaPage: React.FC = () => {
       </Paper>
 
       {/* Criteria Table */}
-      <Paper sx={{ borderRadius: 3, border: '1px solid #E2E8F0', overflow: 'hidden' }}>
+      <Paper sx={{ borderRadius: 3, border: `1px solid ${COLORS.neutral.borderLight}`, overflow: 'hidden' }}>
         <TableContainer>
           <Table>
-            <TableHead sx={{ backgroundColor: '#F8FAFC' }}>
+            <TableHead sx={{ backgroundColor: COLORS.neutral.bgHover }}>
               <TableRow>
-                <TableCell sx={{ fontWeight: 700, width: 80 }}>Order</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Criterion Name & Description</TableCell>
-                <TableCell sx={{ fontWeight: 700, width: 120 }}>Weight</TableCell>
-                <TableCell sx={{ fontWeight: 700, width: 120 }}>Status</TableCell>
-                <TableCell sx={{ fontWeight: 700, width: 140 }} align="right">
+                <TableCell sx={{ width: 80 }}>Order</TableCell>
+                <TableCell>Criterion Name & Description</TableCell>
+                <TableCell sx={{ width: 120 }}>Weight</TableCell>
+                <TableCell sx={{ width: 120 }}>Status</TableCell>
+                <TableCell sx={{ width: 140 }} align="right">
                   Actions
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {isLoading ? (
-                <TableRow>
-                  <TableCell colSpan={5} align="center" sx={{ py: 6 }}>
-                    <CircularProgress size={36} />
-                  </TableCell>
-                </TableRow>
+                <ShimmerTableRows rows={6} columns={5} hasAvatar={false} />
               ) : criteria.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={5} align="center" sx={{ py: 6 }}>
@@ -226,9 +223,9 @@ export const CriteriaPage: React.FC = () => {
               ) : (
                 criteria.map((c) => (
                   <TableRow key={c._id} hover>
-                    <TableCell sx={{ fontWeight: 600 }}>#{c.sortOrder}</TableCell>
+                    <TableCell>#{c.sortOrder}</TableCell>
                     <TableCell>
-                      <Typography variant="subtitle2" fontWeight={600} color="text.primary">
+                      <Typography variant="subtitle2" color="text.primary">
                         {c.name}
                       </Typography>
                       <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
@@ -240,7 +237,7 @@ export const CriteriaPage: React.FC = () => {
                         label={`${c.weight}%`}
                         color="primary"
                         variant="outlined"
-                        sx={{ fontWeight: 700, borderRadius: 1.5 }}
+                        sx={{ borderRadius: 1.5 }}
                       />
                     </TableCell>
                     <TableCell>
@@ -281,7 +278,7 @@ export const CriteriaPage: React.FC = () => {
 
       {/* Add / Edit Dialog */}
       <Dialog open={openModal} onClose={handleCloseModal} maxWidth="sm" fullWidth>
-        <DialogTitle sx={{ fontWeight: 700 }}>
+        <DialogTitle>
           {editingCriterion ? 'Edit Assessment Criterion' : 'Create New Criterion'}
         </DialogTitle>
         <DialogContent dividers>

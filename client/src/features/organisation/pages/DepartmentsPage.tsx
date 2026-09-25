@@ -25,7 +25,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { PageHeader } from '../../../components/common/PageHeader';
 import { StatusBadge } from '../../../components/feedback/StatusBadge';
-import { LoadingSpinner } from '../../../components/common/LoadingSpinner';
+import { ShimmerTableLoader } from '../../../components/common/ShimmerLoader';
 import { EmptyState } from '../../../components/common/EmptyState';
 import { DepartmentItem, Employee, employeesApi } from '../../employees/api/employeesApi';
 import { useAuth } from '../../auth/context/AuthContext';
@@ -126,15 +126,17 @@ export const DepartmentsPage: React.FC = () => {
         }
       />
 
-      <Card>
-        {loading ? (
-          <LoadingSpinner minHeight="300px" />
-        ) : departments.length === 0 ? (
+      {loading ? (
+        <ShimmerTableLoader rows={6} columns={5} />
+      ) : departments.length === 0 ? (
+        <Card>
           <EmptyState
             title="No departments found"
             description="Create departments to categorize projects and team members."
           />
-        ) : (
+        </Card>
+      ) : (
+        <Card>
           <TableContainer>
             <Table>
               <TableHead>
@@ -149,8 +151,8 @@ export const DepartmentsPage: React.FC = () => {
               <TableBody>
                 {departments.map((d) => (
                   <TableRow key={d._id} hover>
-                    <TableCell sx={{ fontWeight: 700, color: 'primary.main' }}>{d.code}</TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>{d.name}</TableCell>
+                    <TableCell sx={{ color: 'primary.main' }}>{d.code}</TableCell>
+                    <TableCell>{d.name}</TableCell>
                     <TableCell>
                       {d.headId ? (
                         <Typography variant="body2">
@@ -173,11 +175,11 @@ export const DepartmentsPage: React.FC = () => {
               </TableBody>
             </Table>
           </TableContainer>
-        )}
-      </Card>
+        </Card>
+      )}
 
       <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle fontWeight={700}>Create New Department</DialogTitle>
+        <DialogTitle>Create New Department</DialogTitle>
         <Box component="form" onSubmit={handleSubmit(handleCreateDepartment)}>
           <DialogContent dividers>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>

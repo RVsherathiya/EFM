@@ -26,7 +26,7 @@ import {
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { tasksApi, PeriodLockDto } from '../api/tasksApi';
 import { PageHeader } from '../../../components/common/PageHeader';
-import { LoadingSpinner } from '../../../components/common/LoadingSpinner';
+import { ShimmerTableLoader } from '../../../components/common/ShimmerLoader';
 
 export const PeriodLocksPage: React.FC = () => {
   const queryClient = useQueryClient();
@@ -97,19 +97,19 @@ export const PeriodLocksPage: React.FC = () => {
       )}
 
       {isLoading ? (
-        <LoadingSpinner message="Loading period lock records..." />
+        <ShimmerTableLoader rows={6} columns={6} />
       ) : (
         <Card>
           <TableContainer component={Paper} elevation={0}>
             <Table>
               <TableHead sx={{ bgcolor: 'background.default' }}>
                 <TableRow>
-                  <TableCell sx={{ fontWeight: 600 }}>Period (Year-Month)</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Status</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Unlocked By</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Unlock Reason</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Unlocked At</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }} align="right">Actions</TableCell>
+                  <TableCell>Period (Year-Month)</TableCell>
+                  <TableCell>Status</TableCell>
+                  <TableCell>Unlocked By</TableCell>
+                  <TableCell>Unlock Reason</TableCell>
+                  <TableCell>Unlocked At</TableCell>
+                  <TableCell align="right">Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -119,7 +119,7 @@ export const PeriodLocksPage: React.FC = () => {
 
                   return (
                     <TableRow key={ym} hover>
-                      <TableCell sx={{ fontWeight: 700 }}>
+                      <TableCell>
                         {ym}
                       </TableCell>
                       <TableCell>
@@ -173,7 +173,7 @@ export const PeriodLocksPage: React.FC = () => {
         maxWidth="sm"
         fullWidth
       >
-        <DialogTitle sx={{ fontWeight: 700 }}>
+        <DialogTitle>
           Unlock Period: {unlockTargetMonth}
         </DialogTitle>
         <DialogContent dividers>

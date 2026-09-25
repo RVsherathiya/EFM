@@ -35,6 +35,7 @@ export class AuthController {
       sendSuccess(res, {
         user: result.user,
         accessToken: result.accessToken,
+        message: 'Signed in successfully.',
       });
     } catch (error) {
       next(error);
@@ -86,6 +87,78 @@ export class AuthController {
         throw AppError.unauthorized('Not authenticated.');
       }
       sendSuccess(res, req.user);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  public async forgotPassword(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const email = req.body.email ? String(req.body.email).trim().toLowerCase() : '';
+      if (!email) {
+        throw AppError.badRequest('Please enter a valid email.');
+      }
+
+      const result = await authService.forgotPassword(email, req.ip, req.headers['user-agent']);
+      sendSuccess(res, result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  public async verifyResetToken(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const token = req.query.token as string || req.body.token as string;
+      if (!token) {
+        throw AppError.badRequest('Reset token is required.');
+      }
+
+      const result = await authService.verifyResetToken(token);
+      sendSuccess(res, result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  public async resetPassword(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { token, newPassword } = req.body;
+      if (!token) {
+        throw AppError.badRequest('Reset token is required.');
+      }
+      if (!newPassword || newPassword.length < 8) {
+        throw AppError.badRequest('New password must be at least 8 characters long.');
+      }
+
+      const result = await authService.resetPassword(token, newPassword, req.ip, req.headers['user-agent']);
+      sendSuccess(res, result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  public async resetPasswordWithOld(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { email, oldPassword, newPassword, token } = req.body;
+      if (!email) {
+        throw AppError.badRequest('Email is required.');
+      }
+      if (!oldPassword) {
+        throw AppError.badRequest('Old password is required.');
+      }
+      if (!newPassword || newPassword.length < 8) {
+        throw AppError.badRequest('New password must be at least 8 characters long.');
+      }
+
+      const result = await authService.resetPasswordWithOld(
+        String(email).trim().toLowerCase(),
+        String(oldPassword),
+        String(newPassword),
+        token ? String(token) : undefined,
+        req.ip,
+        req.headers['user-agent']
+      );
+      sendSuccess(res, result);
     } catch (error) {
       next(error);
     }

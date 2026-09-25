@@ -34,7 +34,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { tasksApi, TaskDto } from '../api/tasksApi';
 import { projectsApi, Project } from '../../projects/api/projectsApi';
 import { PageHeader } from '../../../components/common/PageHeader';
-import { LoadingSpinner } from '../../../components/common/LoadingSpinner';
+import { ShimmerTableLoader } from '../../../components/common/ShimmerLoader';
 import { EmptyState } from '../../../components/common/EmptyState';
 import { StatusBadge } from '../../../components/feedback/StatusBadge';
 import { TaskFormDialog } from '../components/TaskFormDialog';
@@ -197,7 +197,7 @@ export const TasksPage: React.FC = () => {
 
       {/* Tasks Table */}
       {isLoading ? (
-        <LoadingSpinner message="Loading tasks..." />
+        <ShimmerTableLoader rows={6} columns={7} />
       ) : tasks.length === 0 ? (
         <EmptyState
           title="No tasks logged yet"
@@ -211,14 +211,14 @@ export const TasksPage: React.FC = () => {
             <Table>
               <TableHead sx={{ bgcolor: 'background.default' }}>
                 <TableRow>
-                  <TableCell sx={{ fontWeight: 600 }}>Date</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Project</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Title / Description</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Category</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }} align="right">Hours</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Billable</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Status</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }} align="right">Actions</TableCell>
+                  <TableCell>Date</TableCell>
+                  <TableCell>Project</TableCell>
+                  <TableCell>Title / Description</TableCell>
+                  <TableCell>Category</TableCell>
+                  <TableCell align="right">Hours</TableCell>
+                  <TableCell>Billable</TableCell>
+                  <TableCell>Status</TableCell>
+                  <TableCell align="right">Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -234,7 +234,7 @@ export const TasksPage: React.FC = () => {
                         {new Date(task.workDate).toLocaleDateString()}
                       </TableCell>
                       <TableCell>
-                        <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                        <Typography variant="body2">
                           {projectObj?.name || 'Project'}
                         </Typography>
                         <Typography variant="caption" color="text.secondary">
@@ -242,7 +242,7 @@ export const TasksPage: React.FC = () => {
                         </Typography>
                       </TableCell>
                       <TableCell>
-                        <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                        <Typography variant="body2">
                           {task.title}
                         </Typography>
                         <Typography variant="caption" color="text.secondary" sx={{ display: 'block', maxWidth: 300 }} noWrap>
@@ -257,7 +257,7 @@ export const TasksPage: React.FC = () => {
                       <TableCell>
                         <Chip label={task.category} size="small" variant="outlined" />
                       </TableCell>
-                      <TableCell align="right" sx={{ fontWeight: 700 }}>
+                      <TableCell align="right">
                         {task.hours}h
                       </TableCell>
                       <TableCell>

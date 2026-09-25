@@ -18,6 +18,8 @@ export interface IUser extends Document {
   phone?: string;
   avatarUrl?: string;
   joinedDate?: Date;
+  passwordResetToken?: string;
+  passwordResetExpires?: Date;
   isDeleted: boolean;
   deletedAt?: Date;
   createdAt: Date;
@@ -46,6 +48,15 @@ const userSchema = new Schema<IUser>(
       type: String,
       required: true,
       select: false, // Do not return passwordHash in standard queries
+    },
+    passwordResetToken: {
+      type: String,
+      select: false,
+      index: true,
+    },
+    passwordResetExpires: {
+      type: Date,
+      select: false,
     },
     firstName: {
       type: String,

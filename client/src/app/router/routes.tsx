@@ -3,6 +3,7 @@ import { AppLayout } from '../../components/layout/AppLayout';
 import { AuthenticatedRoute } from '../../features/auth/components/AuthenticatedRoute';
 import { RoleRoute } from '../../features/auth/components/RoleRoute';
 import { LoginPage } from '../../features/auth/pages/LoginPage';
+import { ResetPasswordPage } from '../../features/auth/pages/ResetPasswordPage';
 import { DashboardPage } from '../../features/dashboard/pages/DashboardPage';
 import { EmployeesPage } from '../../features/employees/pages/EmployeesPage';
 import { OrgTreePage } from '../../features/employees/pages/OrgTreePage';
@@ -23,11 +24,20 @@ import { CalibrationPage } from '../../features/reviews/pages/CalibrationPage';
 import { ReportsPage } from '../../features/reports/pages/ReportsPage';
 import { AuditLogsPage } from '../../features/audit/pages/AuditLogsPage';
 import { NotificationsPage } from '../../features/notifications/pages/NotificationsPage';
+import { ProfilePage } from '../../features/profile/pages/ProfilePage';
 
 export const routes: RouteObject[] = [
   {
     path: '/login',
     element: <LoginPage />,
+  },
+  {
+    path: '/reset-password',
+    element: <ResetPasswordPage />,
+  },
+  {
+    path: '/reset-password/:token',
+    element: <ResetPasswordPage />,
   },
   {
     path: '/',
@@ -80,6 +90,10 @@ export const routes: RouteObject[] = [
           {
             path: 'notifications',
             element: <NotificationsPage />,
+          },
+          {
+            path: 'profile',
+            element: <ProfilePage />,
           },
 
           // Management routes (Senior managers, PMs, HR, Super Admin)

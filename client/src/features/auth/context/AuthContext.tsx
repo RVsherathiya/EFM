@@ -1,13 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { AuthUser, authApi } from '../api/authApi';
+import { AuthUser, LoginResponse, authApi } from '../api/authApi';
 import { setAuthToken } from '../../../lib/api/apiClient';
 
 interface AuthContextType {
   user: AuthUser | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (credentials: { email: string; password: string }) => Promise<void>;
-  logout: () => Promise<void>;
+  login: (credentials: { email: string; password: string }) => Promise<LoginResponse>;
+  logout: () => Promise<{ message?: string } | void>;
   refetchUser: () => Promise<void>;
 }
 
@@ -46,14 +46,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const data = await authApi.login(credentials);
     setAuthToken(data.accessToken);
     setUser(data.user);
+    return data;
   };
 
   const logout = async () => {
     try {
-      await authApi.logout();
-    } finally {
+      const res = await authApi.logout();
       setAuthToken(null);
       setUser(null);
+      return res;
+    } catch (err) {
+      setAuthToken(null);
+      setUser(null);
+      throw err;
     }
   };
 

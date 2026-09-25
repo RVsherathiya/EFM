@@ -10,7 +10,6 @@ import {
   IconButton,
   Button,
   Chip,
-  CircularProgress,
   Divider,
 } from '@mui/material';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
@@ -20,6 +19,8 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { notificationsApi, NotificationDto } from '../api/notificationsApi';
+import { COLORS } from '../../../constants/colors';
+import { ShimmerListLoader } from '../../../components/common/ShimmerLoader';
 
 export const NotificationsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -60,7 +61,7 @@ export const NotificationsPage: React.FC = () => {
     <Box sx={{ p: { xs: 2, md: 3 } }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Box>
-          <Typography variant="h4" fontWeight={700} color="text.primary">
+          <Typography variant="h4" color="text.primary">
             Notifications & Alerts
           </Typography>
           <Typography variant="body2" color="text.secondary">
@@ -80,11 +81,9 @@ export const NotificationsPage: React.FC = () => {
         )}
       </Box>
 
-      <Paper sx={{ borderRadius: 3, border: '1px solid #E2E8F0', overflow: 'hidden' }}>
+      <Paper sx={{ borderRadius: 3, border: `1px solid ${COLORS.neutral.borderLight}`, overflow: 'hidden' }}>
         {isLoading ? (
-          <Box sx={{ p: 6, display: 'flex', justifyContent: 'center' }}>
-            <CircularProgress size={36} />
-          </Box>
+          <ShimmerListLoader rows={6} />
         ) : notifications.length === 0 ? (
           <Box sx={{ p: 6, textAlign: 'center' }}>
             <NotificationsOutlinedIcon sx={{ fontSize: 48, color: 'text.secondary', mb: 1 }} />
@@ -119,13 +118,13 @@ export const NotificationsPage: React.FC = () => {
                     {!item.readAt ? (
                       <CircleIcon sx={{ fontSize: 10, color: 'primary.main' }} />
                     ) : (
-                      <CircleIcon sx={{ fontSize: 10, color: '#CBD5E1' }} />
+                      <CircleIcon sx={{ fontSize: 10, color: COLORS.neutral.border }} />
                     )}
                   </ListItemIcon>
                   <ListItemText
                     primary={
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
-                        <Typography variant="subtitle2" fontWeight={!item.readAt ? 700 : 500}>
+                        <Typography variant="subtitle2">
                           {item.title}
                         </Typography>
                         <Chip

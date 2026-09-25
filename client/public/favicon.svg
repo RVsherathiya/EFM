@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="160" height="160">
+  <rect width="160" height="160" rx="32" fill="#1871F7"/>
+  <rect x="2" y="2" width="156" height="156" rx="30" stroke="rgba(255,255,255,0.25)" stroke-width="3" fill="none"/>
+  <text x="80" y="76" text-anchor="middle" fill="#FFFFFF" font-family="system-ui, sans-serif" font-weight="900" font-size="22" letter-spacing="0.5">EXCELLENT</text>
+  <text x="83" y="102" text-anchor="middle" fill="#FFFFFF" font-family="system-ui, sans-serif" font-weight="400" font-size="12" letter-spacing="6">WEBWORLD</text>
+</svg>

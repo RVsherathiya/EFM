@@ -32,7 +32,7 @@ import SwapHorizOutlinedIcon from '@mui/icons-material/SwapHorizOutlined';
 import { useSnackbar } from 'notistack';
 import { PageHeader } from '../../../components/common/PageHeader';
 import { StatusBadge } from '../../../components/feedback/StatusBadge';
-import { LoadingSpinner } from '../../../components/common/LoadingSpinner';
+import { ShimmerTableRows } from '../../../components/common/ShimmerLoader';
 import { EmptyState } from '../../../components/common/EmptyState';
 import { Employee, DepartmentItem, employeesApi } from '../api/employeesApi';
 import { EmployeeFormDialog } from '../components/EmployeeFormDialog';
@@ -237,7 +237,25 @@ export const EmployeesPage: React.FC = () => {
 
       <Card>
         {loading ? (
-          <LoadingSpinner minHeight="300px" />
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Employee</TableCell>
+                  <TableCell>Code</TableCell>
+                  <TableCell>Department</TableCell>
+                  <TableCell>Reporting Manager</TableCell>
+                  <TableCell>Level</TableCell>
+                  <TableCell>Roles</TableCell>
+                  <TableCell>Status</TableCell>
+                  {isHR && <TableCell align="right">Actions</TableCell>}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <ShimmerTableRows rows={7} columns={isHR ? 8 : 7} hasAvatar={true} />
+              </TableBody>
+            </Table>
+          </TableContainer>
         ) : employees.length === 0 ? (
           <EmptyState
             title="No employees found"
@@ -268,7 +286,7 @@ export const EmployeesPage: React.FC = () => {
                             {emp.firstName.charAt(0)}
                           </Avatar>
                           <Box>
-                            <Typography variant="subtitle2" fontWeight={600}>
+                            <Typography variant="subtitle2">
                               {emp.fullName}
                             </Typography>
                             <Typography variant="caption" color="text.secondary">
@@ -277,7 +295,7 @@ export const EmployeesPage: React.FC = () => {
                           </Box>
                         </Box>
                       </TableCell>
-                      <TableCell sx={{ fontWeight: 600, color: 'text.secondary' }}>
+                      <TableCell sx={{ color: 'text.secondary' }}>
                         {emp.employeeCode}
                       </TableCell>
                       <TableCell>{emp.departmentId?.name || '-'}</TableCell>

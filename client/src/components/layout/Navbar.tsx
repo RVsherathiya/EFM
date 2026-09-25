@@ -18,8 +18,13 @@ import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { notificationsApi } from '../../features/notifications/api/notificationsApi';
+
+import { Logo } from '../brand/Logo';
+import { SignOutConfirmDialog } from '../common/SignOutConfirmDialog';
+import { COLORS } from '../../constants/colors';
 
 interface NavbarProps {
   onDrawerToggle: () => void;
@@ -29,12 +34,14 @@ interface NavbarProps {
     roles: string[];
     employeeCode: string;
   } | null;
-  onLogout?: () => void;
+  onLogout?: () => Promise<{ message?: string } | void> | void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, user, onLogout }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [signOutDialogOpen, setSignOutDialogOpen] = React.useState(false);
 
   const { data: notifRes } = useQuery({
     queryKey: ['notifications-unread'],
@@ -59,9 +66,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, user, onLogout }
 
   const handleLogoutClick = () => {
     handleMenuClose();
-    if (onLogout) {
-      onLogout();
-    }
+    setSignOutDialogOpen(true);
   };
 
   return (
@@ -69,16 +74,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, user, onLogout }
       position="sticky"
       elevation={0}
       sx={{
-        backgroundColor: '#FFFFFF',
-        color: '#0F172A',
-        borderBottom: '1px solid #E2E8F0',
+        backgroundColor: COLORS.neutral.bgWhite,
+        color: COLORS.neutral.textPrimary,
+        borderBottom: `1px solid ${COLORS.neutral.borderLight}`,
         zIndex: (theme) => theme.zIndex.drawer + 1,
       }}
     >
       <Toolbar sx={{ minHeight: 64, px: { xs: 2, sm: 3 } }}>
         <IconButton
           color="inherit"
-          aria-label="open drawer"
+          aria-label={t('navbar.toggle_menu')}
           edge="start"
           onClick={onDrawerToggle}
           sx={{ mr: 2, display: { md: 'none' } }}
@@ -86,45 +91,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, user, onLogout }
           <MenuIcon />
         </IconButton>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-          <Box
-            sx={{
-              width: 34,
-              height: 34,
-              borderRadius: 2,
-              background: 'linear-gradient(135deg, #2563EB 0%, #7C3AED 100%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#FFFFFF',
-              fontWeight: 800,
-              fontSize: '1rem',
-              boxShadow: '0 2px 6px rgba(37, 99, 235, 0.3)',
-            }}
-          >
-            E
-          </Box>
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{
-              fontFamily: '"Plus Jakarta Sans", sans-serif',
-              fontWeight: 700,
-              background: 'linear-gradient(90deg, #0F172A 0%, #334155 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              display: { xs: 'none', sm: 'block' },
-            }}
-          >
-            Employee Feedback Portal
-          </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Logo size="sm" portalName={t('navbar.portal_name')} onClick={() => navigate('/dashboard')} />
         </Box>
 
         <Box sx={{ flexGrow: 1 }} />
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-          <Tooltip title="Notifications">
+          <Tooltip title={t('navbar.notifications')}>
             <IconButton color="inherit" onClick={() => navigate('/notifications')} size="large">
               <Badge badgeContent={unreadCount} color="error">
                 <NotificationsOutlinedIcon />
@@ -141,7 +115,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, user, onLogout }
               cursor: 'pointer',
               p: '4px 8px',
               borderRadius: 2,
-              '&:hover': { backgroundColor: '#F1F5F9' },
+              '&:hover': { backgroundColor: COLORS.neutral.bgMuted },
             }}
           >
             <Avatar
@@ -150,14 +124,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, user, onLogout }
                 height: 36,
                 bgcolor: 'primary.main',
                 fontSize: '0.9rem',
-                fontWeight: 600,
               }}
             >
               {user?.fullName ? user.fullName.charAt(0).toUpperCase() : 'U'}
             </Avatar>
             <Box sx={{ display: { xs: 'none', md: 'block' }, textAlign: 'left' }}>
               <Typography variant="subtitle2" color="text.primary" sx={{ lineHeight: 1.2 }}>
-                {user?.fullName || 'User'}
+                {user?.fullName || t('navbar.user_fallback')}
               </Typography>
               <Typography variant="caption" color="text.secondary">
                 {user?.roles?.[0] || 'EMPLOYEE'}
@@ -180,7 +153,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, user, onLogout }
           >
             <Box sx={{ px: 2, py: 1.5 }}>
               <Typography variant="subtitle2" noWrap>
-                {user?.fullName || 'User'}
+                {user?.fullName || t('navbar.user_fallback')}
               </Typography>
               <Typography variant="caption" color="text.secondary" noWrap display="block">
                 {user?.email || ''}
@@ -191,18 +164,26 @@ export const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, user, onLogout }
               <ListItemIcon>
                 <PersonOutlineIcon fontSize="small" />
               </ListItemIcon>
-              My Profile
+              {t('navbar.profile')}
             </MenuItem>
             <Divider />
             <MenuItem onClick={handleLogoutClick} sx={{ color: 'error.main' }}>
               <ListItemIcon sx={{ color: 'error.main' }}>
                 <LogoutIcon fontSize="small" />
               </ListItemIcon>
-              Sign Out
+              {t('navbar.sign_out')}
             </MenuItem>
           </Menu>
         </Box>
       </Toolbar>
+
+      {/* Confirmation Sign Out Modal */}
+      <SignOutConfirmDialog
+        open={signOutDialogOpen}
+        onClose={() => setSignOutDialogOpen(false)}
+        user={user}
+        onLogout={onLogout}
+      />
     </AppBar>
   );
 };

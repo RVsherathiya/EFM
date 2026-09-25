@@ -13,6 +13,7 @@ import {
   Alert,
 } from '@mui/material';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
+import { COLORS } from '../../../constants/colors';
 
 interface DocumentUploadDialogProps {
   open: boolean;
@@ -99,7 +100,7 @@ export const DocumentUploadDialog: React.FC<DocumentUploadDialogProps> = ({
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle fontWeight={700}>Upload Project Document</DialogTitle>
+      <DialogTitle>Upload Project Document</DialogTitle>
       <DialogContent dividers>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
           <Typography variant="body2" color="text.secondary">
@@ -111,12 +112,12 @@ export const DocumentUploadDialog: React.FC<DocumentUploadDialogProps> = ({
           <Box
             sx={{
               p: 3,
-              border: '2px dashed #CBD5E1',
+              border: `2px dashed ${COLORS.neutral.border}`,
               borderRadius: 2,
               textAlign: 'center',
-              backgroundColor: '#F8FAFC',
+              backgroundColor: COLORS.neutral.bgHover,
               cursor: 'pointer',
-              '&:hover': { borderColor: 'primary.main', backgroundColor: '#F1F5F9' },
+              '&:hover': { borderColor: 'primary.main', backgroundColor: COLORS.neutral.bgMuted },
             }}
             component="label"
           >
@@ -127,7 +128,7 @@ export const DocumentUploadDialog: React.FC<DocumentUploadDialogProps> = ({
               accept=".pdf,.docx,.xlsx,.pptx,.png,.jpg,.jpeg,.txt,.zip"
             />
             <UploadFileIcon sx={{ fontSize: 40, color: 'text.secondary', mb: 1 }} />
-            <Typography variant="subtitle2" color="text.primary" fontWeight={600}>
+            <Typography variant="subtitle2" color="text.primary">
               {file ? file.name : 'Click or Drag file to upload'}
             </Typography>
             <Typography variant="caption" color="text.secondary" display="block">

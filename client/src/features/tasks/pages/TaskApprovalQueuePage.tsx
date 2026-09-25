@@ -27,7 +27,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { tasksApi, TaskDto } from '../api/tasksApi';
 import { projectsApi, Project } from '../../projects/api/projectsApi';
 import { PageHeader } from '../../../components/common/PageHeader';
-import { LoadingSpinner } from '../../../components/common/LoadingSpinner';
+import { ShimmerTableLoader } from '../../../components/common/ShimmerLoader';
 import { EmptyState } from '../../../components/common/EmptyState';
 import { TaskRejectDialog } from '../components/TaskRejectDialog';
 
@@ -168,7 +168,7 @@ export const TaskApprovalQueuePage: React.FC = () => {
 
       {/* Approvals Table */}
       {isLoading ? (
-        <LoadingSpinner message="Loading pending task approvals..." />
+        <ShimmerTableLoader rows={6} columns={7} />
       ) : tasks.length === 0 ? (
         <EmptyState
           title="All Caught Up!"
@@ -187,12 +187,12 @@ export const TaskApprovalQueuePage: React.FC = () => {
                       onChange={(e) => handleSelectAll(e.target.checked)}
                     />
                   </TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Employee</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Date</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Project</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Task Title & Category</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }} align="right">Hours</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Requested As</TableCell>
+                  <TableCell>Employee</TableCell>
+                  <TableCell>Date</TableCell>
+                  <TableCell>Project</TableCell>
+                  <TableCell>Task Title & Category</TableCell>
+                  <TableCell align="right">Hours</TableCell>
+                  <TableCell>Requested As</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -213,7 +213,7 @@ export const TaskApprovalQueuePage: React.FC = () => {
                         <Checkbox checked={isSelected} />
                       </TableCell>
                       <TableCell>
-                        <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                        <Typography variant="body2">
                           {userObj?.firstName} {userObj?.lastName}
                         </Typography>
                         <Typography variant="caption" color="text.secondary">
@@ -224,7 +224,7 @@ export const TaskApprovalQueuePage: React.FC = () => {
                         {new Date(task.workDate).toLocaleDateString()}
                       </TableCell>
                       <TableCell>
-                        <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                        <Typography variant="body2">
                           {projectObj?.name || 'Project'}
                         </Typography>
                         <Typography variant="caption" color="text.secondary">
@@ -232,7 +232,7 @@ export const TaskApprovalQueuePage: React.FC = () => {
                         </Typography>
                       </TableCell>
                       <TableCell>
-                        <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                        <Typography variant="body2">
                           {task.title}
                         </Typography>
                         <Typography variant="caption" color="text.secondary" sx={{ display: 'block', maxWidth: 280 }} noWrap>
@@ -240,7 +240,7 @@ export const TaskApprovalQueuePage: React.FC = () => {
                         </Typography>
                         <Chip label={task.category} size="small" variant="outlined" sx={{ mt: 0.5, height: 20, fontSize: '0.7rem' }} />
                       </TableCell>
-                      <TableCell align="right" sx={{ fontWeight: 700 }}>
+                      <TableCell align="right">
                         {task.hours}h
                       </TableCell>
                       <TableCell>

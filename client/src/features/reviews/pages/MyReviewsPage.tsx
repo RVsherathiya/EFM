@@ -11,7 +11,6 @@ import {
   TableRow,
   Chip,
   Button,
-  CircularProgress,
   Card,
   CardContent,
   Grid,
@@ -21,6 +20,8 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { reviewsApi } from '../api/reviewsApi';
+import { COLORS } from '../../../constants/colors';
+import { ShimmerTableRows } from '../../../components/common/ShimmerLoader';
 
 const STATUS_COLORS: Record<string, 'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning'> = {
   DRAFT: 'default',
@@ -49,7 +50,7 @@ export const MyReviewsPage: React.FC = () => {
   return (
     <Box sx={{ p: { xs: 2, md: 3 } }}>
       <Box sx={{ mb: 3 }}>
-        <Typography variant="h4" fontWeight={700} color="text.primary">
+        <Typography variant="h4" color="text.primary">
           My Performance Reviews
         </Typography>
         <Typography variant="body2" color="text.secondary">
@@ -60,12 +61,12 @@ export const MyReviewsPage: React.FC = () => {
       {/* Summary Cards */}
       <Grid container spacing={3} sx={{ mb: 3 }}>
         <Grid item xs={12} sm={6} md={4}>
-          <Card sx={{ borderRadius: 3, border: '1px solid #E2E8F0' }}>
+          <Card sx={{ borderRadius: 3, border: `1px solid ${COLORS.neutral.borderLight}` }}>
             <CardContent>
-              <Typography variant="subtitle2" color="text.secondary" fontWeight={600}>
+              <Typography variant="subtitle2" color="text.secondary">
                 Total Reviews
               </Typography>
-              <Typography variant="h4" fontWeight={700} sx={{ my: 1 }}>
+              <Typography variant="h4" sx={{ my: 1 }}>
                 {reviews.length}
               </Typography>
               <Typography variant="caption" color="text.secondary">
@@ -75,12 +76,12 @@ export const MyReviewsPage: React.FC = () => {
           </Card>
         </Grid>
         <Grid item xs={12} sm={6} md={4}>
-          <Card sx={{ borderRadius: 3, border: '1px solid #E2E8F0' }}>
+          <Card sx={{ borderRadius: 3, border: `1px solid ${COLORS.neutral.borderLight}` }}>
             <CardContent>
-              <Typography variant="subtitle2" color="text.secondary" fontWeight={600}>
+              <Typography variant="subtitle2" color="text.secondary">
                 Active Action Needed
               </Typography>
-              <Typography variant="h4" fontWeight={700} color="warning.main" sx={{ my: 1 }}>
+              <Typography variant="h4" color="warning.main" sx={{ my: 1 }}>
                 {reviews.filter((r) => r.status === 'SELF_PENDING' || r.status === 'PUBLISHED').length}
               </Typography>
               <Typography variant="caption" color="text.secondary">
@@ -90,12 +91,12 @@ export const MyReviewsPage: React.FC = () => {
           </Card>
         </Grid>
         <Grid item xs={12} sm={6} md={4}>
-          <Card sx={{ borderRadius: 3, border: '1px solid #E2E8F0' }}>
+          <Card sx={{ borderRadius: 3, border: `1px solid ${COLORS.neutral.borderLight}` }}>
             <CardContent>
-              <Typography variant="subtitle2" color="text.secondary" fontWeight={600}>
+              <Typography variant="subtitle2" color="text.secondary">
                 Latest Published Grade
               </Typography>
-              <Typography variant="h4" fontWeight={700} color="success.main" sx={{ my: 1 }}>
+              <Typography variant="h4" color="success.main" sx={{ my: 1 }}>
                 {reviews.find((r) => r.status === 'PUBLISHED' || r.status === 'ACKNOWLEDGED')?.calculatedGrade || '—'}
               </Typography>
               <Typography variant="caption" color="text.secondary">
@@ -107,28 +108,24 @@ export const MyReviewsPage: React.FC = () => {
       </Grid>
 
       {/* Reviews Table */}
-      <Paper sx={{ borderRadius: 3, border: '1px solid #E2E8F0', overflow: 'hidden' }}>
+      <Paper sx={{ borderRadius: 3, border: `1px solid ${COLORS.neutral.borderLight}`, overflow: 'hidden' }}>
         <TableContainer>
           <Table>
-            <TableHead sx={{ backgroundColor: '#F8FAFC' }}>
+            <TableHead sx={{ backgroundColor: COLORS.neutral.bgHover }}>
               <TableRow>
-                <TableCell sx={{ fontWeight: 700 }}>Cycle Period</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Senior Reviewer</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Project Manager</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Status</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Grade</TableCell>
-                <TableCell sx={{ fontWeight: 700 }} align="right">
+                <TableCell>Cycle Period</TableCell>
+                <TableCell>Senior Reviewer</TableCell>
+                <TableCell>Project Manager</TableCell>
+                <TableCell>Status</TableCell>
+                <TableCell>Grade</TableCell>
+                <TableCell align="right">
                   Action
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {isLoading ? (
-                <TableRow>
-                  <TableCell colSpan={6} align="center" sx={{ py: 6 }}>
-                    <CircularProgress size={36} />
-                  </TableCell>
-                </TableRow>
+                <ShimmerTableRows rows={5} columns={6} />
               ) : reviews.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} align="center" sx={{ py: 6 }}>
@@ -142,7 +139,7 @@ export const MyReviewsPage: React.FC = () => {
                 reviews.map((rev) => (
                   <TableRow key={rev._id} hover>
                     <TableCell>
-                      <Typography variant="subtitle2" fontWeight={700}>
+                      <Typography variant="subtitle2">
                         {rev.cycleId?.name || 'Cycle'}
                       </Typography>
                       <Typography variant="caption" color="text.secondary">
@@ -150,7 +147,7 @@ export const MyReviewsPage: React.FC = () => {
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography variant="body2" fontWeight={600}>
+                      <Typography variant="body2">
                         {rev.seniorId ? `${rev.seniorId.firstName} ${rev.seniorId.lastName}` : 'Unassigned'}
                       </Typography>
                       <Typography variant="caption" color="text.secondary">
@@ -158,7 +155,7 @@ export const MyReviewsPage: React.FC = () => {
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography variant="body2" fontWeight={600}>
+                      <Typography variant="body2">
                         {rev.pmId ? `${rev.pmId.firstName} ${rev.pmId.lastName}` : 'N/A'}
                       </Typography>
                       <Typography variant="caption" color="text.secondary">
@@ -170,7 +167,6 @@ export const MyReviewsPage: React.FC = () => {
                         label={rev.status.replace('_', ' ')}
                         color={STATUS_COLORS[rev.status] || 'default'}
                         size="small"
-                        sx={{ fontWeight: 600 }}
                       />
                     </TableCell>
                     <TableCell>
@@ -178,7 +174,7 @@ export const MyReviewsPage: React.FC = () => {
                         <Chip
                           label={rev.calculatedGrade || '—'}
                           color="primary"
-                          sx={{ fontWeight: 800, minWidth: 40 }}
+                          sx={{ minWidth: 40 }}
                         />
                       ) : (
                         <Typography variant="caption" color="text.secondary">
